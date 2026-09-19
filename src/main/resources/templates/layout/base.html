@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle != null ? pageTitle + ' | MenuWise' : 'MenuWise — Smart Restaurant & Waste Management'}">MenuWise</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slateNavy: {
+                            900: '#090d16',
+                            800: '#0f172a',
+                            700: '#1e293b',
+                            600: '#334155'
+                        },
+                        emeraldAccent: {
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Theme CSS -->
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body class="bg-slateNavy-900 text-slate-100 min-h-screen flex">
+
+    <!-- Fixed Sidebar Fragment -->
+    <div th:replace="~{layout/sidebar :: sidebar}"></div>
+
+    <!-- Main Content Wrapper -->
+    <div class="flex-1 flex flex-col min-w-0 ml-64">
+        <!-- Top App Bar Fragment -->
+        <div th:replace="~{layout/topbar :: topbar}"></div>
+
+        <!-- Dynamic Page Body -->
+        <main class="flex-1 p-6 overflow-y-auto">
+            <div th:replace="~{this :: content}"></div>
+        </main>
+    </div>
+
+    <script>
+        // Render all Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
