@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::mainContent}, 'What-If Simulator', 'simulator')}">
+<body>
+
+<div th:fragment="mainContent">
+    <div class="page-header">
+        <h1 class="page-title">What-If Pricing & Margin Simulator</h1>
+        <p class="page-subtitle">Model menu price adjustments against demand elasticity to project gross profit impact.</p>
+    </div>
+
+    <div class="simulator-layout">
+        <!-- Left Side: Simulator Controls -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2 class="panel-title">Simulation Parameters</h2>
+                <span class="badge-success">Elasticity Engine</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                <div>
+                    <label style="font-size: 0.875rem; font-weight: 600; color: var(--navy-700); margin-bottom: 0.5rem; display: block;">Select Menu Item</label>
+                    <select style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 0.5rem; font-size: 0.9rem; background-color: var(--card-bg);">
+                        <option>Grilled Chicken Breast — $14.99</option>
+                        <option>Classic Cheeseburger — $12.50</option>
+                        <option>Creamy Fettuccine Alfredo — $13.99</option>
+                        <option>Molten Chocolate Cake — $6.50</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="font-size: 0.875rem; font-weight: 600; color: var(--navy-700); display: block;">Current Base Price</label>
+                    <div style="font-size: 1.25rem; font-weight: 700; color: var(--navy-900); margin-top: 0.25rem;">$14.99</div>
+                </div>
+
+                <!-- Price Adjustment Range Slider -->
+                <div class="range-slider-container">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.875rem; font-weight: 600;">
+                        <span>Price Adjustment:</span>
+                        <span id="sliderValue" style="color: var(--emerald-600); font-weight: 700;">+0.0%</span>
+                    </div>
+                    <input type="range" min="-20" max="20" value="0" step="1" class="range-slider" id="priceRangeSlider">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted);">
+                        <span>-20% (Discount)</span>
+                        <span>0% (Base)</span>
+                        <span>+20% (Increase)</span>
+                    </div>
+                </div>
+
+                <button class="btn-primary" id="runSimulationBtn" style="width: 100%;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"/>
+                    </svg>
+                    Run Simulation
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Side: Projected Metrics -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2 class="panel-title">Projected Simulation Impact</h2>
+                <span class="badge-warning">Model Preview</span>
+            </div>
+
+            <div class="grid-stats" style="grid-template-columns: 1fr 1fr; margin-bottom: 0;">
+                <div class="card-stat">
+                    <div class="card-stat-title">Projected Price</div>
+                    <div class="card-stat-value" id="projPrice">$14.99</div>
+                    <div class="card-stat-footer">
+                        <span class="badge-success">Base</span>
+                    </div>
+                </div>
+
+                <div class="card-stat">
+                    <div class="card-stat-title">Estimated Demand</div>
+                    <div class="card-stat-value" id="projDemand">120 units</div>
+                    <div class="card-stat-footer">
+                        <span class="badge-success">Stable</span>
+                    </div>
+                </div>
+
+                <div class="card-stat">
+                    <div class="card-stat-title">Projected Revenue</div>
+                    <div class="card-stat-value" id="projRevenue">$1,798.80</div>
+                    <div class="card-stat-footer">
+                        <span class="badge-success">+$0.00</span>
+                    </div>
+                </div>
+
+                <div class="card-stat">
+                    <div class="card-stat-title">Projected Profit</div>
+                    <div class="card-stat-value" id="projProfit">$1,162.80</div>
+                    <div class="card-stat-footer">
+                        <span class="badge-success">Margin 64.6%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client-side Interactive Slider script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const slider = document.getElementById("priceRangeSlider");
+            const sliderValue = document.getElementById("sliderValue");
+            const projPrice = document.getElementById("projPrice");
+            const projDemand = document.getElementById("projDemand");
+            const projRevenue = document.getElementById("projRevenue");
+            const projProfit = document.getElementById("projProfit");
+
+            const basePrice = 14.99;
+            const baseDemand = 120;
+            const unitCost = 5.30;
+            const elasticity = -1.2; // Elasticity coefficient
+
+            function updateSimulation() {
+                const percentChange = parseFloat(slider.value);
+                sliderValue.textContent = (percentChange >= 0 ? "+" : "") + percentChange.toFixed(1) + "%";
+
+                const newPrice = basePrice * (1 + percentChange / 100);
+                const demandChangePercent = percentChange * elasticity;
+                const newDemand = Math.round(baseDemand * (1 + demandChangePercent / 100));
+
+                const newRevenue = newPrice * newDemand;
+                const totalCost = unitCost * newDemand;
+                const newProfit = newRevenue - totalCost;
+                const marginPercent = (newProfit / newRevenue) * 100;
+
+                projPrice.textContent = "$" + newPrice.toFixed(2);
+                projDemand.textContent = newDemand + " units";
+                projRevenue.textContent = "$" + newRevenue.toFixed(2);
+                projProfit.textContent = "$" + newProfit.toFixed(2);
+            }
+
+            if (slider) {
+                slider.addEventListener("input", updateSimulation);
+                updateSimulation();
+            }
+        });
+    </script>
+</div>
+
+</body>
+</html>

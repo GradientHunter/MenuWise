@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::mainContent}, 'Live Inventory', 'inventory')}">
+<body>
+
+<div th:fragment="mainContent">
+    <div class="page-header">
+        <h1 class="page-title">Live Inventory Management</h1>
+        <p class="page-subtitle">Track raw ingredient stock, reorder thresholds, and expiration alerts.</p>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <h2 class="panel-title">Raw Ingredients Master List</h2>
+            <div style="display: flex; gap: 0.75rem;">
+                <input type="text" placeholder="Search ingredients..." style="padding: 0.5rem 0.8rem; border: 1px solid var(--border-color); border-radius: 0.5rem; font-size: 0.875rem;">
+                <button class="btn-primary">+ Restock Ingredient</button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Ingredient</th>
+                        <th>Current Stock</th>
+                        <th>Unit</th>
+                        <th>Reorder Level</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight: 600;">Chicken Breast</td>
+                        <td>24.0</td>
+                        <td>kg</td>
+                        <td>10.0 kg</td>
+                        <td><span class="badge-success">In Stock</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600;">Tomatoes</td>
+                        <td>8.0</td>
+                        <td>kg</td>
+                        <td>10.0 kg</td>
+                        <td><span class="badge-warning">Low Stock</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600;">Cooking Oil</td>
+                        <td>4.0</td>
+                        <td>L</td>
+                        <td>5.0 L</td>
+                        <td><span class="badge-warning">Low Stock</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600;">Rice</td>
+                        <td>45.0</td>
+                        <td>kg</td>
+                        <td>15.0 kg</td>
+                        <td><span class="badge-success">In Stock</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600;">Cheese</td>
+                        <td>2.0</td>
+                        <td>kg</td>
+                        <td>5.0 kg</td>
+                        <td><span class="badge-danger">Critical</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

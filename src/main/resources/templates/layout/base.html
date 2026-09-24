@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content, pageTitle, activeRoute)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} != null ? ${pageTitle} + ' - MenuWise' : 'MenuWise — Intelligent Restaurant Management'">MenuWise</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Sidebar Fragment -->
+    <div th:replace="~{layout/sidebar :: sidebar(${activeRoute})}"></div>
+
+    <!-- App Main Area -->
+    <div class="app-container">
+        <!-- Topbar Fragment -->
+        <div th:replace="~{layout/topbar :: topbar}"></div>
+
+        <!-- Injected Page Content -->
+        <main class="main-content">
+            <div th:replace="${content}"></div>
+        </main>
+    </div>
+
+</body>
+</html>
