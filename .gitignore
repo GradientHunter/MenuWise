@@ -13,7 +13,7 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -26,11 +26,7 @@ target/
 /.nb-gradletaskcache/
 
 ### Visual Studio Code / Antigravity ###
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.vscode/
 
 ### Log files & DB files ###
 *.log
@@ -38,13 +34,31 @@ target/
 *.db
 .h2.db
 
-### OS ###
+### OS generated files ###
 .DS_Store
 Thumbs.db
+desktop.ini
 
-### Project Documentation ###
+### Environment & Secrets ###
+*.env
+.env
+.env.*
+
+### Project Documentation & Iteration Guides ###
 PROJECT_OVERVIEW.md
+project_overview.md
 PROJECT_STRUCTURE.md
-
-
-
+project_structure.md
+project_strcuture.md
+HOW_TO_RUN.md
+how_to_run.md
+RUN_GUIDE.md
+run_guide.md
+PERSON_A_ITERATION*.md
+person_a_iteration*.md
+PERSON_B_ITERATION*.md
+person_b_iteration*.md
+PERSON_C_ITERATION*.md
+person_c_iteration*.md
+*iteration*.md
+*ITERATION*.md
