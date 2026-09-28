@@ -9,12 +9,6 @@
             <h1 class="sub-header-title">What-If Pricing Simulator</h1>
         </div>
         <div class="sub-header-right">
-            <div class="date-range-pill">
-                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/>
-                </svg>
-                <span>Elasticity: -1.2</span>
-            </div>
         </div>
     </div>
 
@@ -192,8 +186,9 @@ function displayResult(r) {
 
     document.getElementById('resNewPrice').textContent    = `৳ ${r.newPrice?.toFixed(0)}`;
     document.getElementById('resDemand').textContent      = `${r.newDemandUnits} / day`;
-    document.getElementById('resRevDelta').textContent    = `${sign(r.revenueChange)}৳ ${Math.round(r.revenueChange).toLocaleString()}`;
-    document.getElementById('resProfitDelta').textContent = `${sign(r.profitChange)}৳ ${Math.round(r.profitChange).toLocaleString()} profit`;
+    const deltaBadge = document.getElementById('resProfitDelta');
+    deltaBadge.textContent = `${sign(r.profitChange)}৳ ${Math.round(r.profitChange).toLocaleString()} profit`;
+    deltaBadge.className   = r.profitChange >= 0 ? 'badge-growth' : 'badge-danger';
     document.getElementById('resRevDelta').style.color    = deltaColor(r.revenueChange);
 
     document.getElementById('marginBefore').textContent   = `${r.baseMarginPct?.toFixed(1)}%`;
@@ -205,7 +200,6 @@ function displayResult(r) {
     banner.style.display = 'block';
     const isGood = r.profitChange > 0 && r.revenueChange > 0;
     banner.style.background = isGood ? '#ecfdf5' : '#fff1f2';
-    banner.style.border      = `1px solid ${isGood ? '#a7f3d0' : '#fecdd3'}`;
     banner.style.color       = isGood ? '#065f46' : '#9f1239';
     banner.textContent       = r.recommendation;
 }
@@ -265,7 +259,7 @@ async function runBatchSimulation() {
             const verdict  = r.profitChange > 0 && r.revenueChange > 0 ? '✅ Profitable'
                            : r.profitChange <= 0 && r.revenueChange <= 0 ? '❌ Avoid'
                            : '⚠️ Mixed';
-            const vBadge   = verdict.startsWith('✅') ? 'badge-growth' : verdict.startsWith('❌') ? 'badge-danger' : 'badge-lime';
+            const vBadge   = verdict.startsWith('✅') ? 'badge-growth' : verdict.startsWith('❌') ? 'badge-danger' : 'badge-warning';
 
             return `<tr>
                 <td><div style="font-weight:700; color:var(--text-main); font-size:0.88rem;">${r.itemName}</div></td>

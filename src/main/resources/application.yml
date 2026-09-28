@@ -19,4 +19,7 @@ menuwise:
     city: "New York"
     base-url: "https://api.openweathermap.org/data/2.5"
     mock-enabled: true
+  ai:
+    gemini-api-key: ${GEMINI_API_KEY:}
+    model: "gemini-1.5-flash"
 

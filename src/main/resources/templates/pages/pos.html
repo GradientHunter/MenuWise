@@ -21,29 +21,20 @@
                 <span class="notification-red-dot"></span>
             </button>
 
-            <!-- Filter icon -->
+            <!-- Clear Cart icon -->
             <button class="icon-pill-btn" title="Clear Cart" onclick="clearCart()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/><line x1="1" x2="7" y1="14" y2="14"/><line x1="9" x2="15" y1="8" y2="8"/><line x1="17" x2="23" y1="16" y2="16"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
                 </svg>
             </button>
 
+            <!-- Profile avatar with caret -->
             <div class="date-range-pill">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
                 </svg>
                 <span>Live Register</span>
             </div>
-
-            <!-- Profile avatar with caret -->
-            <div class="topbar-profile" title="Cashier / Chef Profile">
-                <div class="topbar-avatar-img">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </div>
-
-            <a th:href="@{/}" class="action-pill-btn">Dashboard ›</a>
         </div>
     </div>
 
@@ -105,7 +96,7 @@
             </div>
 
             <!-- Weather Discount Banner -->
-            <div id="weatherBanner" style="display:none; background: linear-gradient(135deg, #ecfdf5, #d1fae5); border: 1px solid #a7f3d0; border-radius: 0.85rem; padding: 0.6rem 0.9rem; margin: 0.75rem 0 0; font-size: 0.78rem; font-weight: 700; color: #065f46; display: flex; align-items: center; gap: 0.5rem;">
+            <div id="weatherBanner" style="display:none; background: linear-gradient(135deg, #ecfdf5, #d1fae5); border-radius: 0.85rem; padding: 0.6rem 0.9rem; margin: 0.75rem 0 0; font-size: 0.78rem; font-weight: 700; color: #065f46; display: flex; align-items: center; gap: 0.5rem;">
                 🌦️ <span id="weatherBannerText">Weather discount applied</span>
             </div>
 
@@ -147,7 +138,7 @@
             </button>
 
             <!-- Success Toast -->
-            <div id="orderSuccessToast" style="display:none; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 0.85rem; padding: 0.75rem 1rem; margin-top: 0.75rem; font-size: 0.82rem; font-weight: 700; color: #065f46; text-align: center; animation: slideInUp 0.35s ease;">
+            <div id="orderSuccessToast" style="display:none; background: #ecfdf5; border-radius: 0.85rem; padding: 0.75rem 1rem; margin-top: 0.75rem; font-size: 0.82rem; font-weight: 700; color: #065f46; text-align: center; animation: slideInUp 0.35s ease;">
                 ✅ Order placed successfully!
             </div>
         </div>

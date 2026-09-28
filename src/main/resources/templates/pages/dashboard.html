@@ -10,37 +10,17 @@
             <h1 class="sub-header-title" id="dashGreeting">Hello, Chef</h1>
         </div>
         <div class="sub-header-right">
-            <!-- Search icon -->
-            <button class="topbar-circle-btn" title="Search dishes or ingredients" onclick="window.location.href='/pos'">
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            </button>
-
-            <!-- Notification bell with red badge -->
+            <!-- Notification bell — shows red dot only when high-risk items exist -->
             <button class="topbar-circle-btn notification-bell" title="Alerts &amp; Notifications" onclick="window.location.href='/rescue'">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-                <span class="notification-red-dot"></span>
-            </button>
-
-            <!-- Filter icon -->
-            <button class="icon-pill-btn" title="Filter overview" onclick="location.reload()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/><line x1="1" x2="7" y1="14" y2="14"/><line x1="9" x2="15" y1="8" y2="8"/><line x1="17" x2="23" y1="16" y2="16"/>
-                </svg>
+                <span class="notification-red-dot" id="dashBellDot" style="display:none;"></span>
             </button>
 
             <div class="date-range-pill">
                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>
                 </svg>
-                <span id="currentDateDisplay">26 Sep, 2026 - Today</span>
-            </div>
-
-            <!-- Profile avatar with caret -->
-            <div class="topbar-profile" title="Cashier / Chef Profile">
-                <div class="topbar-avatar-img">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                <span id="currentDateDisplay">Today</span>
             </div>
 
             <a th:href="@{/pos}" class="action-pill-btn">
@@ -169,10 +149,10 @@
                 </div>
             </div>
 
-            <!-- Metric pill -->
+            <!-- Avg Order Value -->
             <div style="margin-top:0.85rem; padding-top:0.75rem; border-top:1px solid rgba(0,0,0,0.05); display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size:0.88rem; font-weight:800; color:var(--text-main);" id="avgOrderVal">৳ 4,360.00</span>
-                <span class="badge-growth">↗ 19%</span>
+                <span style="font-size:0.75rem; font-weight:600; color:var(--text-muted);">Avg Order Value</span>
+                <span style="font-size:0.88rem; font-weight:800; color:var(--text-main);" id="avgOrderVal">—</span>
             </div>
         </div>
     </div>
@@ -207,27 +187,31 @@
             </div>
         </div>
 
-        <!-- 5. Rescue Specials (Friends & Family / Specials Card) -->
+        <!-- 5. Rescue Specials (Live Data Card) -->
         <div class="card-panel">
             <div class="card-panel-header">
                 <h3 class="card-panel-title">Rescue Specials</h3>
                 <a th:href="@{/rescue}" class="card-arrow-btn" title="View rescue promotions">↗</a>
             </div>
-            <div class="big-balance-number" style="display:flex; align-items:center; gap:0.65rem; margin-bottom:1rem;">
-                <span id="rescueSavedAmt">৳ 4,263.90</span>
-                <span class="badge-lime">+21.67%</span>
+            <div class="big-balance-number" style="display:flex; align-items:center; gap:0.65rem; margin-bottom:0.5rem;">
+                <span id="rescueSavedAmt">৳ —</span>
+                <span class="badge-lime" id="rescueRiskBadge">Loading...</span>
+            </div>
+            <div style="font-size:0.76rem; color:var(--text-muted); font-weight:600; margin-bottom:1rem;">Estimated waste value at risk</div>
+
+            <!-- At-risk breakdown -->
+            <div style="display:flex; flex-direction:column; gap:0.5rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#fff1f2; border-radius:0.65rem; padding:0.5rem 0.75rem;">
+                    <span style="font-size:0.8rem; font-weight:700; color:#be123c;">🔴 High Risk</span>
+                    <span style="font-size:0.88rem; font-weight:800; color:#be123c;" id="rescueHighCount">—</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#fffbeb; border-radius:0.65rem; padding:0.5rem 0.75rem;">
+                    <span style="font-size:0.8rem; font-weight:700; color:#b45309;">🟡 At Risk Total</span>
+                    <span style="font-size:0.88rem; font-weight:800; color:#b45309;" id="rescueAtRiskCount">—</span>
+                </div>
             </div>
 
-            <!-- Staff / Specials Avatars Row -->
-            <div style="display:flex; align-items:center; gap:0.5rem;">
-                <div style="display:flex; margin-left:0.35rem;">
-                    <div style="width:34px; height:34px; border-radius:50%; background:#0f172a; color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:800; border:2px solid #fff; margin-left:-6px;">🍛</div>
-                    <div style="width:34px; height:34px; border-radius:50%; background:#3b82f6; color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:800; border:2px solid #fff; margin-left:-6px;">🥗</div>
-                    <div style="width:34px; height:34px; border-radius:50%; background:#10b981; color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:800; border:2px solid #fff; margin-left:-6px;">🍹</div>
-                    <div style="width:34px; height:34px; border-radius:50%; background:var(--accent-lime); color:#0f172a; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:800; border:2px solid #fff; margin-left:-6px;">+2</div>
-                </div>
-                <span style="font-size:0.76rem; color:var(--text-muted); font-weight:600; margin-left:0.35rem;">5 active specials</span>
-            </div>
+            <a th:href="@{/rescue}" style="display:block; margin-top:1rem; text-align:center; font-size:0.8rem; font-weight:700; color:var(--primary); text-decoration:none;">Generate AI Rescue Special →</a>
         </div>
 
     </div>
@@ -237,27 +221,30 @@ let barChart = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     // Greeting
-    const h = new Date().getHours();
-    const g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
-    document.getElementById('dashGreeting').textContent = `${g}, Chef`;
+    // Real date
+    const now = new Date();
+    document.getElementById('currentDateDisplay').textContent =
+        now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ' — Today';
 
     loadDashboardData();
 });
 
 async function loadDashboardData() {
     try {
-        const [summary, trend, topItems] = await Promise.all([
+        const [summary, trend, topItems, recentOrders, rescueSummary] = await Promise.all([
             fetch('/api/v1/analytics/summary').then(r => r.json()).catch(() => ({})),
             fetch('/api/v1/analytics/revenue-trend').then(r => r.json()).catch(() => []),
-            fetch('/api/v1/analytics/top-items').then(r => r.json()).catch(() => [])
+            fetch('/api/v1/analytics/top-items').then(r => r.json()).catch(() => []),
+            fetch('/api/v1/orders/recent').then(r => r.json()).catch(() => []),
+            fetch('/api/v1/rescue/summary').then(r => r.json()).catch(() => ({}))
         ]);
 
         // Register Balance & Stats
-        const rev = summary.todayRevenue || 63773.90;
-        document.getElementById('registerBalance').textContent = `৳ ${Math.round(rev).toLocaleString()}`;
-        document.getElementById('foodCostLabel').textContent = `${(summary.foodCostPercentage || 28.4).toFixed(1)}%`;
-        document.getElementById('foodCostBar').style.width = `${Math.min(100, summary.foodCostPercentage || 28.4)}%`;
-        document.getElementById('todayOrdersCount').textContent = `${summary.todayOrderCount || 18} orders today`;
+        const rev = summary.todayRevenue || 0;
+        document.getElementById('registerBalance').textContent = rev > 0 ? `৳ ${Math.round(rev).toLocaleString()}` : '৳ 0';
+        document.getElementById('foodCostLabel').textContent = `${(summary.foodCostPercentage || 0).toFixed(1)}%`;
+        document.getElementById('foodCostBar').style.width = `${Math.min(100, summary.foodCostPercentage || 0)}%`;
+        document.getElementById('todayOrdersCount').textContent = `${summary.todayOrderCount || 0} orders today`;
         document.getElementById('stockStatusText').textContent = summary.lowStockAlertCount > 0 
             ? `${summary.lowStockAlertCount} low stock` : 'Stock healthy';
 
@@ -271,11 +258,31 @@ async function loadDashboardData() {
             document.getElementById('top3Sold').textContent = `${topItems[2].quantitySold} sold`;
         }
 
+        // Avg order value (live)
+        const avgOrder = summary.todayOrderCount > 0
+            ? Math.round((summary.todayRevenue || 0) / summary.todayOrderCount)
+            : 0;
+        document.getElementById('avgOrderVal').textContent = avgOrder > 0 ? `৳ ${avgOrder.toLocaleString()}` : '—';
+
+        // Bell dot — only show if high-risk items exist
+        if (rescueSummary.highRiskCount > 0) {
+            document.getElementById('dashBellDot').style.display = 'block';
+        }
+
+        // Rescue Specials Card — real data
+        const wasteVal = rescueSummary.estimatedWasteValue || 0;
+        document.getElementById('rescueSavedAmt').textContent = `৳ ${Math.round(wasteVal).toLocaleString()}`;
+        document.getElementById('rescueAtRiskCount').textContent = `${rescueSummary.atRiskCount || 0} items`;
+        document.getElementById('rescueHighCount').textContent = `${rescueSummary.highRiskCount || 0} items`;
+        const rescueBadge = document.getElementById('rescueRiskBadge');
+        rescueBadge.textContent = rescueSummary.highRiskCount > 0 ? '⚠ Action Needed' : 'All Clear';
+        rescueBadge.className = rescueSummary.highRiskCount > 0 ? 'badge-danger' : 'badge-success';
+
         // Render Pill-shaped Royal Blue Bar Chart
         renderCalescenceChart(trend);
 
-        // Render Recent Orders Table
-        renderRecentOrdersTable(topItems);
+        // Render Recent Orders Table — real data
+        renderRecentOrdersTable(recentOrders);
 
     } catch (e) {
         console.error('Dashboard load error:', e);
@@ -347,28 +354,42 @@ function renderCalescenceChart(trendData) {
     });
 }
 
-function renderRecentOrdersTable(items) {
-    const tbody = document.getElementById('calescenceTableBody');
-    const mockOrders = [
-        { name: 'Kacchi Biryani Feast', avatar: '🍛', date: '26 Sep 2026', time: '10:30 AM', amount: '৳ 450.00' },
-        { name: 'Fish & Chips Platter', avatar: '🐟', date: '26 Sep 2026', time: '11:15 AM', amount: '৳ 520.00' },
-        { name: 'Royal Borhani Cooler', avatar: '🍹', date: '26 Sep 2026', time: '12:00 PM', amount: '৳ 120.00' },
-        { name: 'Mishti Doi & Rasgulla', avatar: '🍨', date: '26 Sep 2026', time: '12:45 PM', amount: '৳ 150.00' }
-    ];
+function getEmojiForOrder(name) {
+    if (!name) return '🍽️';
+    const lower = name.toLowerCase();
+    const map = { biryani:'🍛', rice:'🍚', fish:'🐟', chips:'🍟', chicken:'🍗',
+                  salad:'🥗', borhani:'🍹', chai:'☕', latte:'☕', doi:'🍨',
+                  rasgulla:'🍨', mishti:'🍨', soup:'🍲', curry:'🍛', juice:'🥤',
+                  burger:'🍔', naan:'🫓', tea:'🍵', coffee:'☕' };
+    for (const [k, e] of Object.entries(map)) { if (lower.includes(k)) return e; }
+    return '🍽️';
+}
 
-    tbody.innerHTML = mockOrders.map(o => `
+function renderRecentOrdersTable(orders) {
+    const tbody = document.getElementById('calescenceTableBody');
+
+    if (!orders || orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:2rem; color:var(--text-muted);">
+            <div style="font-size:1.8rem; margin-bottom:0.5rem;">📋</div>
+            <div style="font-weight:700;">No orders yet</div>
+            <div style="font-size:0.8rem; margin-top:0.25rem;">Place orders via the POS to see them here</div>
+        </td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = orders.map(o => `
         <tr>
             <td>
                 <div style="display:flex; align-items:center; gap:0.75rem;">
                     <div style="width:34px; height:34px; border-radius:50%; background:#f1f5f9; display:flex; align-items:center; justify-content:center; font-size:1.1rem;">
-                        ${o.avatar}
+                        ${getEmojiForOrder(o.itemNames)}
                     </div>
-                    <span style="font-weight:700; color:#0f172a;">${o.name}</span>
+                    <span style="font-weight:700; color:#0f172a; font-size:0.85rem; max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">${o.itemNames}</span>
                 </div>
             </td>
             <td style="color:#64748b; font-size:0.82rem;">${o.date}</td>
             <td style="color:#64748b; font-size:0.82rem;">${o.time}</td>
-            <td style="text-align:right; font-weight:800; color:#0f172a;">${o.amount}</td>
+            <td style="text-align:right; font-weight:800; color:#0f172a;">৳ ${Math.round(o.amount).toLocaleString()}</td>
         </tr>
     `).join('');
 }

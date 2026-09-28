@@ -28,14 +28,14 @@
   --border-subtle:  rgba(0, 0, 0, 0.03);
 
   /* ── Status Colors ─────────────────────────────────────── */
-  --status-success-bg:   #dcfce7;
-  --status-success-text: #15803d;
-  --status-warning-bg:   #fef3c7;
-  --status-warning-text: #b45309;
-  --status-danger-bg:    #ffe4e6;
-  --status-danger-text:  #be123c;
-  --status-info-bg:      #e0f2fe;
-  --status-info-text:    #0369a1;
+  --status-success-bg:   #16a34a;
+  --status-success-text: #ffffff;
+  --status-warning-bg:   #d97706;
+  --status-warning-text: #ffffff;
+  --status-danger-bg:    #e11d48;
+  --status-danger-text:  #ffffff;
+  --status-info-bg:      #0284c7;
+  --status-info-text:    #ffffff;
 
   /* ── Compatibility Aliases ─────────────────────────────── */
   --coral-500:     var(--accent-blue);
@@ -237,6 +237,7 @@ body {
 }
 
 .rail-item {
+  position: relative;
   width: 42px;
   height: 42px;
   display: flex;
@@ -257,6 +258,47 @@ body {
   background: #0f172a;
   color: #ffffff;
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+}
+
+/* ── Instant Floating Tooltip ──────────────────────────────── */
+.rail-item[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18);
+  z-index: 1000;
+}
+
+.rail-item[data-tooltip]::before {
+  content: '';
+  position: absolute;
+  left: calc(100% + 6px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+  border: 4px solid transparent;
+  border-right-color: #0f172a;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 1000;
+}
+
+.rail-item[data-tooltip]:hover::after,
+.rail-item[data-tooltip]:hover::before {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
 }
 
 /* ── App Container & Content Spacing ───────────────────────── */
@@ -506,8 +548,8 @@ body {
   gap: 0.25rem;
   font-size: 0.72rem;
   font-weight: 700;
-  color: #15803d;
-  background: #dcfce7;
+  color: #ffffff !important;
+  background: #16a34a !important;
   padding: 0.2rem 0.55rem;
   border-radius: 9999px;
 }
@@ -516,9 +558,9 @@ body {
   display: inline-flex;
   align-items: center;
   font-size: 0.72rem;
-  font-weight: 800;
-  color: #0f172a;
-  background: var(--accent-lime);
+  font-weight: 700;
+  color: #ffffff !important;
+  background: #65a30d !important;
   padding: 0.2rem 0.55rem;
   border-radius: 9999px;
 }
@@ -716,11 +758,12 @@ body {
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 700;
+  color: #ffffff;
 }
-.badge-success { background: var(--status-success-bg); color: var(--status-success-text); }
-.badge-warning { background: var(--status-warning-bg); color: var(--status-warning-text); }
-.badge-danger  { background: var(--status-danger-bg);  color: var(--status-danger-text); }
-.badge-info    { background: var(--status-info-bg);    color: var(--status-info-text); }
+.badge-success { background: #16a34a !important; color: #ffffff !important; }
+.badge-warning { background: #d97706 !important; color: #ffffff !important; }
+.badge-danger  { background: #e11d48 !important; color: #ffffff !important; }
+.badge-info    { background: #0284c7 !important; color: #ffffff !important; }
 
 .btn-primary:active { transform: translateY(0); }
 
