@@ -165,7 +165,6 @@ let allIngredients = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     loadIngredients();
-    loadDashboardAlerts();
 });
 
 async function loadIngredients() {
@@ -174,6 +173,7 @@ async function loadIngredients() {
         if (!res.ok) throw new Error('Failed to load ingredients');
         allIngredients = await res.json();
         updateStats(allIngredients);
+        updateAlertBanner(allIngredients);
         renderTable(allIngredients);
     } catch (e) {
         document.getElementById('ingredientTableBody').innerHTML = `
@@ -183,21 +183,25 @@ async function loadIngredients() {
     }
 }
 
-async function loadDashboardAlerts() {
-    try {
-        const res = await fetch('/api/v1/dashboard/summary');
-        if (!res.ok) return;
-        const data = await res.json();
-        const low = data.lowStockCount || 0;
-        const exp = data.expiringSoonCount || 0;
-        if (low > 0 || exp > 0) {
-            const parts = [];
-            if (low > 0) parts.push(`<strong>${low}</strong> item${low>1?'s':''} below minimum stock`);
-            if (exp > 0) parts.push(`<strong>${exp}</strong> item${exp>1?'s':''} expiring within 3 days`);
-            document.getElementById('alertBannerText').innerHTML = parts.join(' &nbsp;•&nbsp; ');
-            document.getElementById('alertBanner').style.display = 'flex';
-        }
-    } catch (_) {}
+function updateAlertBanner(items) {
+    const low = items.filter(i => i.currentStock <= i.minimumStock).length;
+    const today = new Date();
+    const threeDays = new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000);
+    const exp = items.filter(i => {
+        if (!i.expiryDate) return false;
+        const d = new Date(i.expiryDate);
+        return d >= today && d <= threeDays;
+    }).length;
+
+    if (low > 0 || exp > 0) {
+        const parts = [];
+        if (low > 0) parts.push(`<strong>${low}</strong> item${low > 1 ? 's' : ''} below minimum stock`);
+        if (exp > 0) parts.push(`<strong>${exp}</strong> item${exp > 1 ? 's' : ''} expiring within 3 days`);
+        document.getElementById('alertBannerText').innerHTML = parts.join(' &nbsp;•&nbsp; ');
+        document.getElementById('alertBanner').style.display = 'flex';
+    } else {
+        document.getElementById('alertBanner').style.display = 'none';
+    }
 }
 
 function updateStats(items) {
