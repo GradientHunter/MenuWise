@@ -43,6 +43,7 @@ desktop.ini
 *.env
 .env
 .env.*
+!.env.example
 
 ### Project Documentation & Iteration Guides ###
 PROJECT_OVERVIEW.md
