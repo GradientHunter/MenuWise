@@ -651,8 +651,6 @@
         </td></tr>`;
                     return;
                 }
-                    return;
-                }
 
                 tbody.innerHTML = orders.map(o => `
         <tr class="order-clickable-row" onclick="toggleOrderDetails(${o.id})" style="cursor:pointer;" title="Click to view ordered items and ingredients">

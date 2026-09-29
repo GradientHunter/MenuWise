@@ -5,7 +5,9 @@ import com.menuwise.domain.inventory.Ingredient;
 import com.menuwise.domain.inventory.Supplier;
 import com.menuwise.domain.menu.Item;
 import com.menuwise.domain.menu.ItemIngredient;
-import com.menuwise.domain.menu.ItemIngredientId;
+import com.menuwise.domain.order.Order;
+import com.menuwise.domain.order.OrderItem;
+import com.menuwise.domain.order.OrderStatus;
 import com.menuwise.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -26,6 +29,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         private final ItemRepository itemRepository;
         private final ItemIngredientRepository itemIngredientRepository;
         private final SupplierRepository supplierRepository;
+        private final OrderRepository orderRepository;
 
         @Override
         @Transactional
@@ -172,7 +176,52 @@ public class DatabaseSeeder implements CommandLineRunner {
                 createBOM(englishMasalaTea, teaLeaves, 0.02);
                 createBOM(englishMasalaTea, wholeMilk, 0.10);
 
-                log.info("Database seeding successfully completed! 8 items, 15 ingredients, recipes configured.");
+                // 6. Seed Sample Recent Orders
+                if (orderRepository.count() == 0) {
+                        LocalDateTime now = LocalDateTime.now();
+
+                        Order order1 = Order.builder()
+                                        .orderTimestamp(now.minusMinutes(42))
+                                        .status(OrderStatus.COMPLETED)
+                                        .totalAmount(900.0)
+                                        .build();
+                        OrderItem oi1 = OrderItem.builder().order(order1).item(kacchiBiryani).quantity(2).unitPrice(450.0).build();
+                        order1.getItems().add(oi1);
+                        orderRepository.save(order1);
+
+                        Order order2 = Order.builder()
+                                        .orderTimestamp(now.minusHours(1).minusMinutes(15))
+                                        .status(OrderStatus.COMPLETED)
+                                        .totalAmount(520.0)
+                                        .build();
+                        OrderItem oi2 = OrderItem.builder().order(order2).item(fishAndChips).quantity(1).unitPrice(520.0).build();
+                        order2.getItems().add(oi2);
+                        orderRepository.save(order2);
+
+                        Order order3 = Order.builder()
+                                        .orderTimestamp(now.minusHours(2).minusMinutes(30))
+                                        .status(OrderStatus.COMPLETED)
+                                        .totalAmount(500.0)
+                                        .build();
+                        OrderItem oi3a = OrderItem.builder().order(order3).item(chickenRoast).quantity(1).unitPrice(380.0).build();
+                        OrderItem oi3b = OrderItem.builder().order(order3).item(royalBorhani).quantity(1).unitPrice(120.0).build();
+                        order3.getItems().add(oi3a);
+                        order3.getItems().add(oi3b);
+                        orderRepository.save(order3);
+
+                        Order order4 = Order.builder()
+                                        .orderTimestamp(now.minusHours(3).minusMinutes(45))
+                                        .status(OrderStatus.COMPLETED)
+                                        .totalAmount(230.0)
+                                        .build();
+                        OrderItem oi4a = OrderItem.builder().order(order4).item(mishtiDoi).quantity(1).unitPrice(150.0).build();
+                        OrderItem oi4b = OrderItem.builder().order(order4).item(englishMasalaTea).quantity(1).unitPrice(80.0).build();
+                        order4.getItems().add(oi4a);
+                        order4.getItems().add(oi4b);
+                        orderRepository.save(order4);
+                }
+
+                log.info("Database seeding successfully completed! 8 items, 15 ingredients, recipes configured, sample orders seeded.");
         }
 
         private void createBOM(Item item, Ingredient ingredient, Double quantity) {
