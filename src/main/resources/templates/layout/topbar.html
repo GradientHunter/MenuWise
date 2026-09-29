@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 
 <header class="topbar" th:fragment="topbar(activeRoute)">
@@ -21,9 +21,10 @@
         <a th:href="@{/pos}" class="topbar-nav-pill" th:classappend="${activeRoute == 'pos' ? 'active' : ''}">POS</a>
         <a th:href="@{/inventory}" class="topbar-nav-pill" th:classappend="${activeRoute == 'inventory' ? 'active' : ''}">Inventory</a>
         <a th:href="@{/analytics}" class="topbar-nav-pill" th:classappend="${activeRoute == 'analytics' ? 'active' : ''}">Analytics</a>
-        <a th:href="@{/simulator}" class="topbar-nav-pill" th:classappend="${activeRoute == 'simulator' ? 'active' : ''}">Simulator</a>
+        <a sec:authorize="hasAuthority('ROLE_ADMIN')" th:href="@{/simulator}" class="topbar-nav-pill" th:classappend="${activeRoute == 'simulator' ? 'active' : ''}">Simulator</a>
         <a th:href="@{/weather}" class="topbar-nav-pill" th:classappend="${activeRoute == 'weather' ? 'active' : ''}">Weather</a>
         <a th:href="@{/rescue}" class="topbar-nav-pill" th:classappend="${activeRoute == 'rescue' ? 'active' : ''}">Rescue</a>
+        <a sec:authorize="hasAuthority('ROLE_ADMIN')" th:href="@{/admin/users}" class="topbar-nav-pill" th:classappend="${activeRoute == 'admin-users' ? 'active' : ''}">Staff</a>
     </nav>
 
     <div class="topbar-right">

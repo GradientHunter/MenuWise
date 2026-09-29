@@ -82,4 +82,12 @@ class DashboardViewControllerTest {
                 .andExpect(view().name("pages/rescue"))
                 .andExpect(model().attribute("activeRoute", "rescue"));
     }
+
+    @Test
+    void testAdminUsersRoute() throws Exception {
+        mockMvc.perform(get("/admin/users"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("pages/admin-users"))
+                .andExpect(model().attribute("activeRoute", "admin-users"));
+    }
 }

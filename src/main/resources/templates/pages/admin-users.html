@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::mainContent}, 'Staff Management', 'admin-users')}">
+<body>
+<div th:fragment="mainContent">
+
+    <!-- Sub-Header Bar -->
+    <div class="sub-header-bar">
+        <div class="sub-header-left">
+            <h1 class="sub-header-title">Staff &amp; Role Management</h1>
+            <span style="font-size:0.75rem; font-weight:700; color:#16a34a; background:#dcfce7; padding:0.2rem 0.65rem; border-radius:9999px;">
+                Admin Portal
+            </span>
+        </div>
+        <div class="sub-header-right">
+            <button class="action-pill-btn" onclick="openAddUserModal()" style="background:#0f172a; color:#ffffff; border-color:#0f172a;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                + Add Staff Member
+            </button>
+        </div>
+    </div>
+
+    <!-- 4 Clean Stat Tiles -->
+    <div class="grid-stats" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:1rem; margin-bottom:1.5rem;">
+        <div class="card-panel" style="padding: 1.15rem 1.35rem;">
+            <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:0.35rem;">Total Staff</div>
+            <div style="font-size:1.85rem; font-weight:800; color:var(--text-main);" th:text="${totalCount}">3</div>
+            <div style="font-size:0.72rem; color:#64748b; margin-top:0.25rem;">Active system accounts</div>
+        </div>
+
+        <div class="card-panel" style="padding: 1.15rem 1.35rem;">
+            <div style="font-size:0.75rem; font-weight:700; color:#c8f53c; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:0.35rem;">
+                <span style="background:#0f172a; color:#c8f53c; padding:0.15rem 0.5rem; border-radius:6px;">Admins</span>
+            </div>
+            <div style="font-size:1.85rem; font-weight:800; color:var(--text-main);" th:text="${adminCount}">1</div>
+            <div style="font-size:0.72rem; color:#64748b; margin-top:0.25rem;">Full root access</div>
+        </div>
+
+        <div class="card-panel" style="padding: 1.15rem 1.35rem;">
+            <div style="font-size:0.75rem; font-weight:700; color:#0284c7; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:0.35rem;">
+                <span style="background:#e0f2fe; color:#0284c7; padding:0.15rem 0.5rem; border-radius:6px;">Managers</span>
+            </div>
+            <div style="font-size:1.85rem; font-weight:800; color:var(--text-main);" th:text="${managerCount}">1</div>
+            <div style="font-size:0.72rem; color:#64748b; margin-top:0.25rem;">Operations &amp; Stock</div>
+        </div>
+
+        <div class="card-panel" style="padding: 1.15rem 1.35rem;">
+            <div style="font-size:0.75rem; font-weight:700; color:#b45309; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:0.35rem;">
+                <span style="background:#fef3c7; color:#b45309; padding:0.15rem 0.5rem; border-radius:6px;">Cashiers</span>
+            </div>
+            <div style="font-size:1.85rem; font-weight:800; color:var(--text-main);" th:text="${cashierCount}">1</div>
+            <div style="font-size:0.72rem; color:#64748b; margin-top:0.25rem;">POS Register only</div>
+        </div>
+    </div>
+
+    <!-- Staff Table Panel -->
+    <div class="card-panel" style="padding:0; overflow:hidden;">
+        <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.06); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <h3 class="card-panel-title" style="margin:0;">Active Staff Directory</h3>
+                <div style="font-size:0.72rem; color:var(--text-muted); font-weight:600; margin-top:2px;">Manage user permissions, operational clearance, and credentials</div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="calescence-table">
+                <thead>
+                    <tr>
+                        <th>Staff Member</th>
+                        <th>Username</th>
+                        <th>Role &amp; Permissions</th>
+                        <th>Registered Date</th>
+                        <th style="text-align:right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user : ${users}" th:id="'user-row-' + ${user.id}">
+                        <td>
+                            <div style="display:flex; align-items:center; gap:0.75rem;">
+                                <div style="width:36px; height:36px; border-radius:50%; background:#f1f5f9; display:flex; align-items:center; justify-content:center; font-weight:800; color:#0f172a; font-size:0.85rem; border:1px solid rgba(0,0,0,0.06);">
+                                    <span th:text="${#strings.substring(user.fullName, 0, 1)}">U</span>
+                                </div>
+                                <div>
+                                    <span style="font-weight:700; color:#0f172a; font-size:0.88rem;" th:text="${user.fullName}">Full Name</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <code style="background:#f1f5f9; padding:0.2rem 0.5rem; border-radius:6px; font-size:0.78rem; font-weight:700; color:#334155;" th:text="${user.username}">username</code>
+                        </td>
+                        <td>
+                            <span th:if="${user.role.name() == 'ROLE_ADMIN'}" style="background:#0f172a; color:#c8f53c; font-size:0.72rem; font-weight:800; padding:0.25rem 0.65rem; border-radius:9999px; display:inline-flex; align-items:center; gap:0.35rem;">
+                                🛡️ Admin (Root)
+                            </span>
+                            <span th:if="${user.role.name() == 'ROLE_MANAGER'}" style="background:#e0f2fe; color:#0284c7; font-size:0.72rem; font-weight:800; padding:0.25rem 0.65rem; border-radius:9999px; display:inline-flex; align-items:center; gap:0.35rem;">
+                                📊 Manager (Ops)
+                            </span>
+                            <span th:if="${user.role.name() == 'ROLE_CASHIER'}" style="background:#fef3c7; color:#b45309; font-size:0.72rem; font-weight:800; padding:0.25rem 0.65rem; border-radius:9999px; display:inline-flex; align-items:center; gap:0.35rem;">
+                                💳 Cashier (POS)
+                            </span>
+                        </td>
+                        <td style="color:#64748b; font-size:0.82rem;" th:text="${#temporals.format(user.createdAt, 'dd MMM yyyy, hh:mm a')}">Date</td>
+                        <td style="text-align:right;">
+                            <button th:onclick="'deleteStaff(' + ${user.id} + ', \'' + ${user.username} + '\')'"
+                                    style="background:#fff1f2; color:#be123c; border:1px solid #fecdd3; border-radius:0.5rem; padding:0.35rem 0.75rem; font-size:0.75rem; font-weight:700; cursor:pointer; transition:all 0.15s ease;">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Add Staff Modal -->
+    <div id="addUserModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.45); backdrop-filter:blur(4px); z-index:200; align-items:center; justify-content:center;">
+        <div style="background:#ffffff; border-radius:1.25rem; width:100%; max-width:440px; padding:1.75rem; box-shadow:0 20px 40px rgba(0,0,0,0.15); border:1px solid rgba(0,0,0,0.08); animation:modalFadeIn 0.2s ease;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+                <h3 style="font-size:1.15rem; font-weight:800; color:#0f172a; margin:0;">Create Staff Account</h3>
+                <button onclick="closeAddUserModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer; color:#94a3b8;">✕</button>
+            </div>
+
+            <form id="addStaffForm" onsubmit="submitNewStaff(event)">
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; font-size:0.78rem; font-weight:700; color:#475569; margin-bottom:0.35rem;">Full Name</label>
+                    <input type="text" id="newFullName" required placeholder="e.g. Tanvir Ahmed"
+                           style="width:100%; padding:0.65rem 0.85rem; border-radius:0.65rem; border:1px solid #cbd5e1; font-size:0.85rem; outline:none; font-family:inherit;">
+                </div>
+
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; font-size:0.78rem; font-weight:700; color:#475569; margin-bottom:0.35rem;">Username</label>
+                    <input type="text" id="newUsername" required placeholder="e.g. tanvir"
+                           style="width:100%; padding:0.65rem 0.85rem; border-radius:0.65rem; border:1px solid #cbd5e1; font-size:0.85rem; outline:none; font-family:inherit;">
+                </div>
+
+                <div style="margin-bottom:1rem;">
+                    <label style="display:block; font-size:0.78rem; font-weight:700; color:#475569; margin-bottom:0.35rem;">Temporary Password</label>
+                    <input type="password" id="newPassword" required placeholder="••••••••" minlength="6"
+                           style="width:100%; padding:0.65rem 0.85rem; border-radius:0.65rem; border:1px solid #cbd5e1; font-size:0.85rem; outline:none; font-family:inherit;">
+                </div>
+
+                <div style="margin-bottom:1.5rem;">
+                    <label style="display:block; font-size:0.78rem; font-weight:700; color:#475569; margin-bottom:0.35rem;">Role &amp; Clearance</label>
+                    <select id="newRole" required style="width:100%; padding:0.65rem 0.85rem; border-radius:0.65rem; border:1px solid #cbd5e1; font-size:0.85rem; outline:none; background:#ffffff; font-family:inherit;">
+                        <option value="ROLE_CASHIER">Cashier (Front Desk &amp; POS Only)</option>
+                        <option value="ROLE_MANAGER">Manager (Stock, Ops, Rescue, Weather)</option>
+                        <option value="ROLE_ADMIN">Admin (Full System Access &amp; Simulator)</option>
+                    </select>
+                </div>
+
+                <div id="modalError" style="display:none; color:#be123c; background:#ffe4e6; padding:0.5rem 0.75rem; border-radius:0.5rem; font-size:0.78rem; font-weight:700; margin-bottom:1rem;"></div>
+
+                <div style="display:flex; justify-content:flex-end; gap:0.65rem;">
+                    <button type="button" onclick="closeAddUserModal()" style="padding:0.6rem 1.1rem; border-radius:0.65rem; border:1px solid #cbd5e1; background:#ffffff; font-size:0.82rem; font-weight:700; cursor:pointer;">Cancel</button>
+                    <button type="submit" id="createStaffBtn" style="padding:0.6rem 1.25rem; border-radius:0.65rem; border:none; background:#0f172a; color:#ffffff; font-size:0.82rem; font-weight:700; cursor:pointer;">Create Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openAddUserModal() {
+            document.getElementById('addUserModal').style.display = 'flex';
+            document.getElementById('modalError').style.display = 'none';
+        }
+
+        function closeAddUserModal() {
+            document.getElementById('addUserModal').style.display = 'none';
+        }
+
+        async function submitNewStaff(e) {
+            e.preventDefault();
+            const btn = document.getElementById('createStaffBtn');
+            const errDiv = document.getElementById('modalError');
+            btn.disabled = true;
+            btn.textContent = 'Creating...';
+            errDiv.style.display = 'none';
+
+            const payload = {
+                fullName: document.getElementById('newFullName').value.trim(),
+                username: document.getElementById('newUsername').value.trim(),
+                password: document.getElementById('newPassword').value,
+                role: document.getElementById('newRole').value
+            };
+
+            try {
+                const res = await fetch('/admin/users/api/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    const data = await res.json().catch(() => ({}));
+                    throw new Error(data.message || 'Failed to create user');
+                }
+
+                window.location.reload();
+            } catch (err) {
+                errDiv.textContent = err.message;
+                errDiv.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Create Account';
+            }
+        }
+
+        async function deleteStaff(id, username) {
+            if (!confirm(`Are you sure you want to delete staff account '${username}'?`)) {
+                return;
+            }
+
+            try {
+                const res = await fetch(`/admin/users/api/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!res.ok) {
+                    const data = await res.json().catch(() => ({}));
+                    alert(data.message || 'Could not delete staff member');
+                    return;
+                }
+
+                const row = document.getElementById(`user-row-${id}`);
+                if (row) row.remove();
+            } catch (err) {
+                alert('Network error while deleting user');
+            }
+        }
+    </script>
+
+</div>
+</body>
+</html>

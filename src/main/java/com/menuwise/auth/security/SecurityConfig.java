@@ -50,12 +50,13 @@ public class SecurityConfig {
                 // Cashier & POS endpoints
                 .requestMatchers("/pos/**", "/api/v1/orders/**").hasAnyAuthority("ROLE_CASHIER", "ROLE_MANAGER", "ROLE_ADMIN")
 
-                // Kitchen & Weather endpoints (Manager / Admin)
-                .requestMatchers("/rescue/**", "/weather/**", "/api/v1/rescue/**", "/api/v1/prep/**").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN")
+                // Kitchen, Weather, Inventory & Operations endpoints (Manager & Admin)
+                .requestMatchers("/rescue/**", "/weather/**", "/inventory/**", "/analytics/**", "/dashboard/**",
+                                 "/api/v1/rescue/**", "/api/v1/prep/**", "/api/v1/inventory/**", "/api/v1/analytics/**").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN")
 
-                // Manager & Admin full access endpoints
-                .requestMatchers("/inventory/**", "/simulator/**", "/analytics/**", "/dashboard/**",
-                                 "/api/v1/inventory/**", "/api/v1/simulator/**").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN")
+                // Admin-exclusive features: Price Simulator & Staff Management
+                .requestMatchers("/simulator/**", "/admin/**",
+                                 "/api/v1/simulator/**", "/api/v1/admin/**").hasAuthority("ROLE_ADMIN")
 
                 // Any other request must be authenticated
                 .anyRequest().authenticated()
