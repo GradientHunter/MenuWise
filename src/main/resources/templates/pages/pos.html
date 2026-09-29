@@ -199,10 +199,32 @@ async function loadMenuItems() {
 
 async function loadWeatherDiscount() {
     try {
-        const res = await fetch('/api/v1/prep/weather');
-        if (!res.ok) return;
-        const weather = await res.json();
-        if (weather.isInclementWeather) {
+        let weather = null;
+        try {
+            const res = await fetch('/api/v1/prep/weather');
+            if (res.ok) weather = await res.json();
+        } catch (e) {
+            console.warn('Backend weather fetch failed in POS', e);
+        }
+
+        // If backend returned stale mock (8°C Rain 82%) or was unavailable
+        if (!weather || (weather.temperatureCelsius === 8 && weather.condition === 'Rain' && weather.humidity === 82)) {
+            try {
+                const omRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=23.8103&longitude=90.4125&current=temperature_2m,weather_code&daily=precipitation_probability_max&timezone=auto');
+                if (omRes.ok) {
+                    const omData = await omRes.json();
+                    const wCode = (omData.current && omData.current.weather_code) || 0;
+                    weather = {
+                        isInclementWeather: wCode >= 51,
+                        condition: (wCode === 0) ? 'Clear' : (wCode <= 3) ? 'Clouds' : (wCode >= 61) ? 'Rain' : 'Normal'
+                    };
+                }
+            } catch (err) {
+                console.error('POS live weather fetch failed:', err);
+            }
+        }
+
+        if (weather && weather.isInclementWeather) {
             weatherDiscount = 5;
             const banner = document.getElementById('weatherBanner');
             if (banner) {
@@ -210,6 +232,10 @@ async function loadWeatherDiscount() {
                 document.getElementById('weatherBannerText').textContent =
                     `🌧️ ${weather.condition} weather — 5% off applied!`;
             }
+        } else {
+            weatherDiscount = 0;
+            const banner = document.getElementById('weatherBanner');
+            if (banner) banner.style.display = 'none';
         }
         weatherLoaded = true;
     } catch { weatherLoaded = true; }

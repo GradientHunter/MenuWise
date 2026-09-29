@@ -19,4 +19,5 @@ public class WeatherForecastDto {
     private Integer humidity;
     private Double rainProbability;
     private Boolean isInclementWeather;
+    private String city;
 }

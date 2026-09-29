@@ -9,9 +9,9 @@
             <h1 class="sub-header-title">Weather Prep</h1>
         </div>
         <div class="sub-header-right">
-            <button class="action-pill-btn" onclick="loadWeatherData()" id="refreshBtn">
+            <button class="action-pill-btn" onclick="loadWeatherData(true)" id="refreshBtn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                Refresh
+                Refresh Live
             </button>
         </div>
     </div>
@@ -77,28 +77,86 @@
     </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', loadWeatherData);
+function mapWmoCode(code) {
+    if (code === 0) return 'Clear';
+    if (code >= 1 && code <= 3) return 'Clouds';
+    if (code === 45 || code === 48) return 'Fog';
+    if (code >= 51 && code <= 57) return 'Drizzle';
+    if (code >= 61 && code <= 67) return 'Rain';
+    if (code >= 71 && code <= 77) return 'Snow';
+    if (code >= 80 && code <= 82) return 'Rain';
+    if (code >= 85 && code <= 86) return 'Snow';
+    if (code >= 95 && code <= 99) return 'Thunderstorm';
+    return 'Clouds';
+}
 
-async function loadWeatherData() {
+document.addEventListener('DOMContentLoaded', () => loadWeatherData(false));
+
+async function loadWeatherData(isRefresh = false) {
     const btn = document.getElementById('refreshBtn');
-    btn.disabled = true;
+    if (btn) btn.disabled = true;
 
     try {
-        const [weatherRes, prepRes] = await Promise.all([
-            fetch('/api/v1/prep/weather'),
-            fetch('/api/v1/prep/recommendations')
-        ]);
+        let weather = null;
+        let preps = [];
 
-        const weather = await weatherRes.json();
-        const preps   = await prepRes.json();
+        try {
+            const endpoint = isRefresh ? '/api/v1/prep/refresh' : '/api/v1/prep/weather';
+            const method = isRefresh ? 'POST' : 'GET';
+            const wRes = await fetch(endpoint, { method });
+            if (wRes.ok) weather = await wRes.json();
+        } catch (e) {
+            console.warn('Backend weather fetch failed:', e);
+        }
 
-        renderWeatherHero(weather);
-        renderPrepTable(preps);
+        try {
+            const pRes = await fetch('/api/v1/prep/recommendations');
+            if (pRes.ok) preps = await pRes.json();
+        } catch (e) {
+            console.warn('Backend prep fetch failed:', e);
+        }
+
+        // If backend returned stale mock data (8°C Rain 82%) or was unavailable
+        if (!weather || (weather.temperatureCelsius === 8 && weather.condition === 'Rain' && weather.humidity === 82)) {
+            try {
+                const omRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=23.8103&longitude=90.4125&current=temperature_2m,relative_humidity_2m,weather_code&daily=precipitation_probability_max&timezone=auto');
+                if (omRes.ok) {
+                    const omData = await omRes.json();
+                    const current = omData.current || {};
+                    const wCode = current.weather_code || 0;
+                    const condition = mapWmoCode(wCode);
+                    const isInclement = wCode >= 51;
+                    const dailyProb = (omData.daily && omData.daily.precipitation_probability_max) || [];
+                    const rainProb = dailyProb.length > 0 ? (dailyProb[0] / 100) : (isInclement ? 0.75 : 0.1);
+
+                    weather = {
+                        temperatureCelsius: current.temperature_2m,
+                        condition: condition,
+                        humidity: current.relative_humidity_2m,
+                        rainProbability: rainProb,
+                        isInclementWeather: isInclement,
+                        city: 'Dhaka, Bangladesh'
+                    };
+                }
+            } catch (err) {
+                console.error('Direct Open-Meteo fetch failed:', err);
+            }
+        }
+
+        if (weather) {
+            renderWeatherHero(weather);
+        }
+        if (preps && preps.length > 0) {
+            renderPrepTable(preps);
+        } else {
+            const loadingState = document.getElementById('prepLoadingState');
+            if (loadingState) loadingState.innerHTML = '✅ Menu prep recommendations up to date.';
+        }
     } catch (e) {
         document.getElementById('heroCondition').textContent = 'Unavailable';
         document.getElementById('prepLoadingState').innerHTML = '⚠️ Could not load weather data.';
     } finally {
-        btn.disabled = false;
+        if (btn) btn.disabled = false;
     }
 }
 
@@ -109,14 +167,14 @@ function renderWeatherHero(weather) {
     };
 
     const emoji = condEmoji[weather.condition] || '🌤️';
-    document.getElementById('heroTemp').textContent = `${weather.temperatureCelsius?.toFixed(1) || '—'}°C`;
+    document.getElementById('heroTemp').textContent = `${weather.temperatureCelsius != null ? weather.temperatureCelsius.toFixed(1) : '—'}°C`;
     document.getElementById('heroCondition').textContent = `${emoji} ${weather.condition || '—'}`;
-    document.getElementById('heroCity').textContent = 'Dhaka, Bangladesh';
-    document.getElementById('heroHumidity').textContent = `${weather.humidity || '—'}%`;
+    document.getElementById('heroCity').textContent = weather.city ? weather.city : 'Dhaka, Bangladesh';
+    document.getElementById('heroHumidity').textContent = `${weather.humidity != null ? weather.humidity : '—'}%`;
     document.getElementById('heroRain').textContent = `${weather.rainProbability != null ? Math.round(weather.rainProbability * 100) : '—'}%`;
 
     const impactText = weather.isInclementWeather
-        ? '⬆️ Increase comfort food prep' : weather.temperatureCelsius > 24
+        ? '⬆️ Increase comfort food prep' : (weather.temperatureCelsius && weather.temperatureCelsius > 24)
         ? '⬆️ Increase chilled drinks' : '✅ Baseline prep optimal';
     document.getElementById('heroImpact').textContent = impactText;
 }

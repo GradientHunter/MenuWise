@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
  * Active when menuwise.weather.mock-enabled is set to false.
  */
 @Component
-@ConditionalOnProperty(name = "menuwise.weather.mock-enabled", havingValue = "false")
+@ConditionalOnProperty(name = "menuwise.weather.provider", havingValue = "openweathermap")
 @RequiredArgsConstructor
 @Slf4j
 public class OpenWeatherMapClient implements WeatherClient {

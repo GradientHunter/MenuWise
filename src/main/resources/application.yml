@@ -15,10 +15,9 @@ open-weather:
 
 menuwise:
   weather:
-    api-key: ${OPENWEATHER_API_KEY:demo_key}
-    city: "New York"
-    base-url: "https://api.openweathermap.org/data/2.5"
-    mock-enabled: true
+    provider: openmeteo
+    city: "Dhaka"
+    mock-enabled: false
   ai:
     gemini-api-key: ${GEMINI_API_KEY:}
     model: "gemini-1.5-flash"

@@ -6,10 +6,7 @@ import com.menuwise.weather.service.WeatherAdaptivePrepService;
 import com.menuwise.weather.service.WeatherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -48,6 +45,16 @@ public class PrepApiController {
     @GetMapping("/weather")
     public ResponseEntity<WeatherForecastDto> getWeatherForecast(
             @RequestParam(required = false) String city) {
+        return ResponseEntity.ok(weatherService.getCurrentForecast(city));
+    }
+
+    /**
+     * Evicts cached weather and prep signals, returning a freshly queried forecast.
+     */
+    @PostMapping("/refresh")
+    public ResponseEntity<WeatherForecastDto> refreshWeather(
+            @RequestParam(required = false) String city) {
+        weatherService.evictWeatherCache();
         return ResponseEntity.ok(weatherService.getCurrentForecast(city));
     }
 }
