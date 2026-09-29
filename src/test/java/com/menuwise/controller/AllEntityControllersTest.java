@@ -42,7 +42,7 @@ class AllEntityControllersTest {
                 .name("Special Mocktails")
                 .description("Handcrafted seasonal beverages")
                 .build();
-
+        
         mockMvc.perform(post("/api/v1/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))

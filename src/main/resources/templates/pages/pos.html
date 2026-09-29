@@ -100,14 +100,15 @@
                 🌦️ <span id="weatherBannerText">Weather discount applied</span>
             </div>
 
-            <!-- Cart Items -->
-            <div class="cart-items" id="cartItemsList">
-                <div id="emptyCartMsg" style="text-align:center; padding: 2.5rem 0; color: var(--text-muted);">
-                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🛒</div>
-                    <p style="font-size: 0.85rem; font-weight: 600;">Cart is empty</p>
-                    <p style="font-size: 0.75rem; margin-top: 0.2rem;">Add items from the menu</p>
-                </div>
+            <!-- Empty Cart Message -->
+            <div id="emptyCartMsg" style="text-align:center; padding: 2.5rem 0; color: var(--text-muted);">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🛒</div>
+                <p style="font-size: 0.85rem; font-weight: 600;">Cart is empty</p>
+                <p style="font-size: 0.75rem; margin-top: 0.2rem;">Add items from the menu</p>
             </div>
+
+            <!-- Cart Items -->
+            <div class="cart-items" id="cartItemsList" style="display:none;"></div>
 
             <!-- Totals -->
             <div class="cart-summary" id="cartSummarySection" style="display:none;">
@@ -336,54 +337,68 @@ function renderCart() {
     const cartEntries = Object.values(cart);
 
     if (cartEntries.length === 0) {
-        list.innerHTML = '';
-        list.appendChild(emptyMsg);
-        emptyMsg.style.display = 'block';
-        summarySection.style.display = 'none';
-        checkoutBtn.disabled = true;
-        checkoutBtn.style.opacity = '0.5';
-        checkoutBtn.style.cursor = 'not-allowed';
+        if (list) {
+            list.innerHTML = '';
+            list.style.display = 'none';
+        }
+        if (emptyMsg) emptyMsg.style.display = 'block';
+        if (summarySection) summarySection.style.display = 'none';
+        if (checkoutBtn) {
+            checkoutBtn.disabled = true;
+            checkoutBtn.style.opacity = '0.5';
+            checkoutBtn.style.cursor = 'not-allowed';
+        }
         return;
     }
 
-    emptyMsg.style.display = 'none';
-    summarySection.style.display = 'block';
-    checkoutBtn.disabled = false;
-    checkoutBtn.style.opacity = '1';
-    checkoutBtn.style.cursor = 'pointer';
+    if (emptyMsg) emptyMsg.style.display = 'none';
+    if (list) list.style.display = 'flex';
+    if (summarySection) summarySection.style.display = 'block';
+    if (checkoutBtn) {
+        checkoutBtn.disabled = false;
+        checkoutBtn.style.opacity = '1';
+        checkoutBtn.style.cursor = 'pointer';
+    }
 
     let subtotal = 0;
-    list.innerHTML = cartEntries.map(({ item, qty }) => {
-        const lineTotal = item.sellingPrice * qty;
-        subtotal += lineTotal;
-        return `
-        <div style="display:flex; align-items:center; justify-content:space-between; padding: 0.65rem 0; border-bottom: 1px solid #fff3ea; animation: fadeIn 0.2s ease;">
-            <div style="display:flex; align-items:center; gap: 0.6rem; flex:1; min-width:0;">
-                <span style="font-size: 1.1rem;">${getEmoji(item.name)}</span>
-                <div style="min-width:0;">
-                    <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name}</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted);">৳ ${item.sellingPrice?.toFixed(0)} × ${qty}</div>
+    if (list) {
+        list.innerHTML = cartEntries.map(({ item, qty }) => {
+            const lineTotal = item.sellingPrice * qty;
+            subtotal += lineTotal;
+            return `
+            <div style="display:flex; align-items:center; justify-content:space-between; padding: 0.65rem 0; border-bottom: 1px solid #fff3ea; animation: fadeIn 0.2s ease;">
+                <div style="display:flex; align-items:center; gap: 0.6rem; flex:1; min-width:0;">
+                    <span style="font-size: 1.1rem;">${getEmoji(item.name)}</span>
+                    <div style="min-width:0;">
+                        <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">৳ ${item.sellingPrice?.toFixed(0)} × ${qty}</div>
+                    </div>
                 </div>
-            </div>
-            <div style="display:flex; align-items:center; gap:0.5rem; flex-shrink:0;">
-                <button onclick="removeFromCart(${item.id})" style="width:22px; height:22px; border-radius:50%; border:1px solid #f0e0d8; background:#fff9f5; color:var(--text-main); font-size:1rem; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; font-weight:700; transition:all 0.15s;">−</button>
-                <span style="font-size: 0.82rem; font-weight: 800; min-width: 16px; text-align:center;">${qty}</span>
-                <button onclick="addToCart(${item.id})" style="width:22px; height:22px; border-radius:50%; border:none; background:var(--primary); color:#fff; font-size:1rem; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; font-weight:700; transition:all 0.15s;">+</button>
-                <span style="font-size: 0.82rem; font-weight: 800; color: var(--primary); min-width: 48px; text-align:right;">৳ ${lineTotal.toFixed(0)}</span>
-            </div>
-        </div>`;
-    }).join('');
+                <div style="display:flex; align-items:center; gap:0.5rem; flex-shrink:0;">
+                    <button onclick="removeFromCart(${item.id})" style="width:22px; height:22px; border-radius:50%; border:1px solid #f0e0d8; background:#fff9f5; color:var(--text-main); font-size:1rem; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; font-weight:700; transition:all 0.15s;">−</button>
+                    <span style="font-size: 0.82rem; font-weight: 800; min-width: 16px; text-align:center;">${qty}</span>
+                    <button onclick="addToCart(${item.id})" style="width:22px; height:22px; border-radius:50%; border:none; background:var(--primary); color:#fff; font-size:1rem; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; font-weight:700; transition:all 0.15s;">+</button>
+                    <span style="font-size: 0.82rem; font-weight: 800; color: var(--primary); min-width: 48px; text-align:right;">৳ ${lineTotal.toFixed(0)}</span>
+                </div>
+            </div>`;
+        }).join('');
+    }
 
     const discount = weatherDiscount > 0 ? +(subtotal * weatherDiscount / 100).toFixed(2) : 0;
     const afterDiscount = subtotal - discount;
     const tax = +(afterDiscount * 0.10).toFixed(2);
     const total = afterDiscount + tax;
 
-    document.getElementById('subtotalLabel').textContent = `৳ ${subtotal.toFixed(0)}`;
-    document.getElementById('discountLabel').textContent = `-৳ ${discount.toFixed(0)}`;
-    document.getElementById('discountRow').style.display = discount > 0 ? 'flex' : 'none';
-    document.getElementById('taxLabel').textContent = `৳ ${tax.toFixed(0)}`;
-    document.getElementById('totalLabel').textContent = `৳ ${total.toFixed(0)}`;
+    const subtotalEl = document.getElementById('subtotalLabel');
+    if (subtotalEl) subtotalEl.textContent = `৳ ${subtotal.toFixed(0)}`;
+    const discountEl = document.getElementById('discountLabel');
+    if (discountEl) discountEl.textContent = `-৳ ${discount.toFixed(0)}`;
+    const discountRow = document.getElementById('discountRow');
+    if (discountRow) discountRow.style.display = discount > 0 ? 'flex' : 'none';
+    const taxEl = document.getElementById('taxLabel');
+    if (taxEl) taxEl.textContent = `৳ ${tax.toFixed(0)}`;
+    const totalEl = document.getElementById('totalLabel');
+    if (totalEl) totalEl.textContent = `৳ ${total.toFixed(0)}`;
 }
 
 // ── Checkout ───────────────────────────────────────────

@@ -26,7 +26,7 @@ public class ItemApiController {
     public ResponseEntity<List<Item>> getAllItems() {
         return ResponseEntity.ok(itemRepository.findAll());
     }
-
+                                                                                        
     @GetMapping("/{id}")
     public ResponseEntity<Item> getItemById(@PathVariable Long id) {
         Item item = itemRepository.findById(id)
