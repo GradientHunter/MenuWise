@@ -93,12 +93,12 @@ public class RescueRecipeService {
     private String buildUrgencyLabel(Ingredient ingredient, SpoilageForecastDto forecast) {
         if (ingredient.getExpiryDate() != null) {
             long days = java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), ingredient.getExpiryDate());
-            if (days <= 0) return "⛔ EXPIRED — Discard immediately";
-            if (days == 1) return "🔴 Expires TOMORROW — Sell today";
-            if (days <= 3) return "🟠 Expires in " + days + " days — Prioritize now";
-            return "🟡 Expires in " + days + " days — Use soon";
+            if (days <= 0) return "EXPIRED — Discard immediately";
+            if (days == 1) return "Expires TOMORROW — Sell today";
+            if (days <= 3) return "Expires in " + days + " days — Prioritize now";
+            return "Expires in " + days + " days — Use soon";
         }
-        return "⚠️ Low stock alert — " + forecast.getRiskTier() + " risk";
+        return "Low stock alert — " + forecast.getRiskTier() + " risk";
     }
 
     @Data

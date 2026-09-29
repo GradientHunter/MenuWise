@@ -1,27 +1,30 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 
 <aside class="sidebar-rail" th:fragment="sidebar(activeRoute)">
     <div class="rail-top">
-        <!-- 1. Dashboard -->
-        <a th:href="@{/}" class="rail-item" th:classappend="${activeRoute == 'dashboard' ? 'active' : ''}" data-tooltip="Dashboard" title="Dashboard">
+        <!-- 1. Dashboard (Admin / Manager) -->
+        <a sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
+           th:href="@{/}" class="rail-item" th:classappend="${activeRoute == 'dashboard' ? 'active' : ''}" data-tooltip="Dashboard" title="Dashboard">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                 <polyline points="9 22 9 12 15 12 15 22"/>
             </svg>
         </a>
 
-        <!-- 2. Analytics (Trending Chart) -->
-        <a th:href="@{/analytics}" class="rail-item" th:classappend="${activeRoute == 'analytics' ? 'active' : ''}" data-tooltip="Margin Analytics" title="Margin Analytics">
+        <!-- 2. Analytics (Admin / Manager) -->
+        <a sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
+           th:href="@{/analytics}" class="rail-item" th:classappend="${activeRoute == 'analytics' ? 'active' : ''}" data-tooltip="Margin Analytics" title="Margin Analytics">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
                 <polyline points="16 7 22 7 22 13"/>
             </svg>
         </a>
 
-        <!-- 3. POS (Shopping Bag) -->
-        <a th:href="@{/pos}" class="rail-item" th:classappend="${activeRoute == 'pos' ? 'active' : ''}" data-tooltip="Point of Sale" title="Point of Sale">
+        <!-- 3. POS (Cashier / Manager / Admin) -->
+        <a sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_CASHIER')"
+           th:href="@{/pos}" class="rail-item" th:classappend="${activeRoute == 'pos' ? 'active' : ''}" data-tooltip="Point of Sale" title="Point of Sale">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
                 <path d="M3 6h18"/>
@@ -29,8 +32,9 @@
             </svg>
         </a>
 
-        <!-- 4. Inventory (Warehouse Box) -->
-        <a th:href="@{/inventory}" class="rail-item" th:classappend="${activeRoute == 'inventory' ? 'active' : ''}" data-tooltip="Live Inventory" title="Live Inventory">
+        <!-- 4. Inventory (Admin / Manager) -->
+        <a sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
+           th:href="@{/inventory}" class="rail-item" th:classappend="${activeRoute == 'inventory' ? 'active' : ''}" data-tooltip="Live Inventory" title="Live Inventory">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="m7.5 4.27 9 5.15"/>
                 <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
@@ -39,8 +43,9 @@
             </svg>
         </a>
 
-        <!-- 5. Simulator (Sliders) -->
-        <a th:href="@{/simulator}" class="rail-item" th:classappend="${activeRoute == 'simulator' ? 'active' : ''}" data-tooltip="Price Simulator" title="Price Simulator">
+        <!-- 5. Simulator (Admin / Manager) -->
+        <a sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
+           th:href="@{/simulator}" class="rail-item" th:classappend="${activeRoute == 'simulator' ? 'active' : ''}" data-tooltip="Price Simulator" title="Price Simulator">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="4" x2="4" y1="21" y2="14"/>
                 <line x1="4" x2="4" y1="10" y2="3"/>
@@ -54,8 +59,9 @@
             </svg>
         </a>
 
-        <!-- 6. Weather (Sun & Cloud) -->
-        <a th:href="@{/weather}" class="rail-item" th:classappend="${activeRoute == 'weather' ? 'active' : ''}" data-tooltip="Weather Prep" title="Weather Prep">
+        <!-- 6. Weather (Manager / Admin) -->
+        <a sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
+           th:href="@{/weather}" class="rail-item" th:classappend="${activeRoute == 'weather' ? 'active' : ''}" data-tooltip="Weather Prep" title="Weather Prep">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 2v2"/>
                 <path d="m4.93 4.93 1.41 1.41"/>
@@ -66,8 +72,9 @@
             </svg>
         </a>
 
-        <!-- 7. Rescue (Discount Tag) -->
-        <a th:href="@{/rescue}" class="rail-item" th:classappend="${activeRoute == 'rescue' ? 'active' : ''}" data-tooltip="Food Rescue" title="Food Rescue">
+        <!-- 7. Rescue (Manager / Admin) -->
+        <a sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_MANAGER')"
+           th:href="@{/rescue}" class="rail-item" th:classappend="${activeRoute == 'rescue' ? 'active' : ''}" data-tooltip="Food Rescue" title="Food Rescue">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/>
                 <path d="M7 7h.01"/>
@@ -76,8 +83,28 @@
     </div>
 
     <div class="rail-bottom">
+        <!-- Sign Out Button -->
+        <a th:href="@{/logout}" class="rail-item" data-tooltip="Sign Out" title="Sign Out" style="color: #ef4444;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+        </a>
     </div>
 </aside>
+
+<script>
+async function handleLogout() {
+    try {
+        await fetch('/api/v1/auth/logout', { method: 'POST' });
+    } catch (e) {
+        console.error('Logout error:', e);
+    } finally {
+        window.location.href = '/login';
+    }
+}
+</script>
 
 </body>
 </html>

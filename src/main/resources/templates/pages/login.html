@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — MenuWise</title>
+    <link rel="stylesheet" th:href="@{/css/main.css(v='2.1')}">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2'/><path d='M7 2v20'/><path d='M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7'/></svg>">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100vh;
+            max-height: 100vh;
+            overflow: hidden;
+            font-family: var(--font-sans);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .split-screen-container {
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* ── Left Half: Dark Slate Brand Showcase ── */
+        .brand-panel {
+            background: #0f172a;
+            color: #ffffff;
+            padding: 3rem 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-panel::before {
+            content: '';
+            position: absolute;
+            top: -15%;
+            left: -15%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand-logo-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+
+        .brand-title-group h2 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+
+        .brand-title-group span {
+            font-size: 0.76rem;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .brand-hero {
+            position: relative;
+            z-index: 2;
+            margin: auto 0;
+            padding: 1rem 0;
+        }
+
+        .brand-hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: rgba(200, 245, 60, 0.12);
+            border: 1px solid rgba(200, 245, 60, 0.3);
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #c8f53c;
+            margin-bottom: 1.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .brand-hero h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            line-height: 1.25;
+            letter-spacing: -0.03em;
+            color: #ffffff;
+            margin-bottom: 0.85rem;
+        }
+
+        .brand-hero p {
+            font-size: 0.92rem;
+            color: #94a3b8;
+            line-height: 1.55;
+            max-width: 480px;
+            margin-bottom: 1.75rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1rem;
+            padding: 0.85rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .feature-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .feature-text-title {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.1rem;
+        }
+
+        .feature-text-desc {
+            font-size: 0.72rem;
+            color: #94a3b8;
+        }
+
+        .brand-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #64748b;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 1.25rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .system-status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+        }
+
+        /* ── Right Half: Seamless Sign-In Form (Card-Free!) ── */
+        .auth-panel {
+            background: #ffffff;
+            padding: 3rem 4.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .auth-content-box {
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .auth-welcome {
+            margin-bottom: 1.75rem;
+        }
+
+        .auth-welcome h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.35rem;
+        }
+
+        .auth-welcome p {
+            font-size: 0.9rem;
+            color: #64748b;
+            line-height: 1.45;
+        }
+
+        .form-group {
+            margin-bottom: 1.15rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            transition: color 0.18s ease;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.75rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: #f8fafc;
+            border-radius: 0.85rem;
+            font-size: 0.92rem;
+            font-family: var(--font-sans);
+            color: #0f172a;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.18s ease;
+        }
+
+        .form-input:focus {
+            background: #ffffff;
+            border-color: #0f172a;
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+        }
+
+        .form-input:focus + .input-icon,
+        .input-container:focus-within .input-icon {
+            color: #0f172a;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: #0f172a;
+            color: #ffffff;
+            border: none;
+            border-radius: 9999px;
+            padding: 0.88rem 1.25rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            font-family: var(--font-sans);
+            cursor: pointer;
+            transition: all 0.18s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.18);
+        }
+
+        .btn-submit:hover {
+            background: #1e293b;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .alert-pill {
+            padding: 0.75rem 1rem;
+            border-radius: 0.85rem;
+            font-size: 0.84rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            color: #15803d;
+            border: 1px solid rgba(22, 163, 74, 0.15);
+        }
+
+        .alert-error {
+            background: #fff1f2;
+            color: #e11d48;
+            border: 1px solid rgba(225, 29, 72, 0.15);
+            display: none;
+        }
+
+        .demo-section {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .demo-title {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .demo-title-badge {
+            font-size: 0.68rem;
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem;
+        }
+
+        .demo-btn {
+            background: #f8fafc;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 0.85rem;
+            padding: 0.65rem 0.85rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.15s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+            font-family: var(--font-sans);
+        }
+
+        .demo-btn:hover {
+            background: #ffffff;
+            border-color: rgba(15, 23, 42, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+        }
+
+        .demo-btn-role {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .demo-btn-desc {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        @media (max-width: 900px) {
+            .split-screen-container {
+                grid-template-columns: 1fr;
+            }
+            .brand-panel {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="split-screen-container">
+    <!-- Left Half: Dark Slate Brand Showcase -->
+    <div class="brand-panel">
+        <div class="brand-header">
+            <div class="brand-logo-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+                    <path d="M7 2v20"/>
+                    <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+                </svg>
+            </div>
+            <div class="brand-title-group">
+                <h2>MenuWise</h2>
+                <span>Restaurant Operating System</span>
+            </div>
+        </div>
+
+        <div class="brand-hero">
+            <div class="brand-hero-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span>Zero-Waste Restaurant Intelligence</span>
+            </div>
+            <h1>Smart Operations for Modern Kitchens.</h1>
+            <p>From live order ticketing and automated inventory tracking to zero-waste recipe synthesis — all under one unified station.</p>
+
+            <div class="features-grid">
+                <div class="feature-item">
+                    <span class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    </span>
+                    <div>
+                        <div class="feature-text-title">Point of Sale</div>
+                        <div class="feature-text-desc">Fast ordering &amp; receipting</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+                    </span>
+                    <div>
+                        <div class="feature-text-title">Food Rescue AI</div>
+                        <div class="feature-text-desc">Automated surplus recipes</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+                    </span>
+                    <div>
+                        <div class="feature-text-title">Smart Inventory</div>
+                        <div class="feature-text-desc">Stock &amp; expiry tracking</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg>
+                    </span>
+                    <div>
+                        <div class="feature-text-title">Weather Adaptive</div>
+                        <div class="feature-text-desc">Predictive prep demand</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="brand-footer">
+            <div class="system-status-indicator">
+                <span class="status-dot"></span>
+                <span>System Online • All Terminals Active</span>
+            </div>
+            <span>v2.1 OS</span>
+        </div>
+    </div>
+
+    <!-- Right Half: Seamless Sign-In Form (No Card Box!) -->
+    <div class="auth-panel">
+        <div class="auth-content-box">
+            <div class="auth-welcome">
+                <h2>Staff Sign In</h2>
+                <p>Welcome back! Select your station or sign in to continue.</p>
+            </div>
+
+            <!-- Success message banner (e.g. on logout) -->
+            <div class="alert-pill alert-success" th:if="${successMessage != null}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <span th:text="${successMessage}">Signed out successfully.</span>
+            </div>
+
+            <!-- Error message banner -->
+            <div class="alert-pill alert-error" id="errorBanner" th:style="${errorMessage != null ? 'display:flex;' : 'display:none;'}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span id="errorMessageText" th:text="${errorMessage != null ? errorMessage : 'Invalid username or password'}">Invalid credentials</span>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username</label>
+                    <div class="input-container">
+                        <span class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </span>
+                        <input type="text" id="username" class="form-input" placeholder="e.g. admin or cashier" required autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <div class="input-container">
+                        <span class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        </span>
+                        <input type="password" id="password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span>Sign In to Terminal</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+            </form>
+
+            <!-- Quick Demo Accounts -->
+            <div class="demo-section">
+                <div class="demo-title">
+                    <span>Quick Station Access</span>
+                    <span class="demo-title-badge">Click to test</span>
+                </div>
+                <div class="demo-grid">
+                    <button type="button" class="demo-btn" onclick="fillAndLogin('admin', 'admin123')">
+                        <span class="demo-btn-role">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            Admin
+                        </span>
+                        <span class="demo-btn-desc">Full System</span>
+                    </button>
+                    <button type="button" class="demo-btn" onclick="fillAndLogin('cashier', 'cashier123')">
+                        <span class="demo-btn-role">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                            Cashier
+                        </span>
+                        <span class="demo-btn-desc">POS Station</span>
+                    </button>
+                    <button type="button" class="demo-btn" onclick="fillAndLogin('manager', 'manager123')">
+                        <span class="demo-btn-role">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+                            Manager
+                        </span>
+                        <span class="demo-btn-desc">Stock &amp; Reports</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+async function handleLogin(e) {
+    if (e) e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const errBanner = document.getElementById('errorBanner');
+    const errText = document.getElementById('errorMessageText');
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!username || !password) return;
+
+    btn.disabled = true;
+    btn.innerHTML = 'Signing in...';
+    errBanner.style.display = 'none';
+
+    try {
+        const res = await fetch('/api/v1/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.message || 'Invalid username or password');
+        }
+
+        const data = await res.json();
+
+        // Redirect based on role
+        if (data.role === 'ROLE_CASHIER') {
+            window.location.href = '/pos';
+        } else {
+            window.location.href = '/dashboard';
+        }
+    } catch (err) {
+        errText.textContent = err.message || 'Login failed. Please check your credentials.';
+        errBanner.style.display = 'flex';
+        btn.disabled = false;
+        btn.innerHTML = `<span>Sign In to Terminal</span> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
+    }
+}
+
+function fillAndLogin(user, pass) {
+    document.getElementById('username').value = user;
+    document.getElementById('password').value = pass;
+    handleLogin();
+}
+</script>
+
+</body>
+</html>

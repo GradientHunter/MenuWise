@@ -91,13 +91,13 @@ public class PricingSimulatorService {
 
     private String buildRecommendation(double changePct, double revDelta, double profitDelta) {
         if (profitDelta > 0 && revDelta > 0) {
-            return "✅ Profitable — both revenue and profit increase at this price point.";
+            return "Profitable — both revenue and profit increase at this price point.";
         } else if (profitDelta > 0 && revDelta <= 0) {
-            return "⚠️ Higher margin but lower volume — suitable for premium positioning.";
+            return "Higher margin but lower volume — suitable for premium positioning.";
         } else if (profitDelta <= 0 && revDelta > 0) {
-            return "📊 Higher volume but tighter margin — suitable for market share strategy.";
+            return "Higher volume but tighter margin — suitable for market share strategy.";
         } else {
-            return "❌ Not recommended — both revenue and profit decline at this price point.";
+            return "Not recommended — both revenue and profit decline at this price point.";
         }
     }
 
