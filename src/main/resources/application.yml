@@ -19,6 +19,6 @@ menuwise:
     city: "Dhaka"
     mock-enabled: false
   ai:
-    gemini-api-key: ${GEMINI_API_KEY:}
-    model: "gemini-1.5-flash"
+    gemini-api-key: "AQ.Ab8RN6JiFbU7AOJhA68hxnhrKVYLTSK-Tgo4fZXjCRDpzLxtZw"
+    model: "gemini-flash-lite-latest"
 

@@ -44,7 +44,7 @@ public class AiRescueChefService {
     @Value("${menuwise.ai.gemini-api-key:}")
     private String geminiApiKey;
 
-    @Value("${menuwise.ai.model:gemini-1.5-flash}")
+    @Value("${menuwise.ai.model:gemini-3.8-flash}")
     private String modelName;
 
     /**
@@ -261,8 +261,31 @@ public class AiRescueChefService {
 
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 JsonNode root = objectMapper.readTree(response.getBody());
-                String text = root.path("candidates").get(0).path("content").path("parts").get(0).path("text").asText();
-                text = text.replace("```json", "").replace("```", "").trim();
+                JsonNode candidates = root.path("candidates");
+                if (candidates.isMissingNode() || !candidates.isArray() || candidates.isEmpty()) {
+                    return null;
+                }
+
+                JsonNode parts = candidates.get(0).path("content").path("parts");
+                String text = null;
+                if (parts.isArray()) {
+                    for (JsonNode part : parts) {
+                        if (part.has("text") && !part.path("text").asText().isBlank()) {
+                            text = part.path("text").asText();
+                            break;
+                        }
+                    }
+                }
+
+                if (text == null || text.isBlank()) {
+                    return null;
+                }
+
+                int startIdx = text.indexOf('{');
+                int endIdx = text.lastIndexOf('}');
+                if (startIdx >= 0 && endIdx > startIdx) {
+                    text = text.substring(startIdx, endIdx + 1);
+                }
 
                 JsonNode parsed = objectMapper.readTree(text);
                 AiRescueRecipeDto base = buildSmartCulinaryRecipe(ingredients);
@@ -275,7 +298,7 @@ public class AiRescueChefService {
                     parsed.get("steps").forEach(s -> steps.add(s.asText()));
                     base.setPreparationSteps(steps);
                 }
-                base.setAiModelUsed("Google Gemini (" + modelName + ")");
+                base.setAiModelUsed("Intelligent suggestion");
                 return base;
             }
         } catch (Exception e) {
