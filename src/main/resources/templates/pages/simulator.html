@@ -246,7 +246,7 @@ function buildCurveChart(r) {
 async function runBatchSimulation() {
     const pct = parseInt(document.getElementById('priceSlider').value);
     const btn = document.getElementById('batchBtn');
-    btn.disabled = true; btn.textContent = '⏳ Computing...';
+    btn.disabled = true; btn.textContent = 'Computing...';
 
     try {
         const res = await fetch(`/api/v1/simulator/simulate-all?priceChangePct=${pct}`);
@@ -256,10 +256,10 @@ async function runBatchSimulation() {
         tbody.innerHTML = results.map(r => {
             const revSign  = r.revenueChange >= 0 ? '+' : '';
             const revColor = r.revenueChange >= 0 ? '#10b981' : '#f43f5e';
-            const verdict  = r.profitChange > 0 && r.revenueChange > 0 ? '✅ Profitable'
-                           : r.profitChange <= 0 && r.revenueChange <= 0 ? '❌ Avoid'
-                           : '⚠️ Mixed';
-            const vBadge   = verdict.startsWith('✅') ? 'badge-growth' : verdict.startsWith('❌') ? 'badge-danger' : 'badge-warning';
+            const isProfitable = r.profitChange > 0 && r.revenueChange > 0;
+            const isAvoid = r.profitChange <= 0 && r.revenueChange <= 0;
+            const verdict = isProfitable ? 'Profitable' : (isAvoid ? 'Avoid' : 'Mixed');
+            const vBadge  = isProfitable ? 'badge-growth' : (isAvoid ? 'badge-danger' : 'badge-warning');
 
             return `<tr>
                 <td><div style="font-weight:700; color:var(--text-main); font-size:0.88rem;">${r.itemName}</div></td>
@@ -271,7 +271,7 @@ async function runBatchSimulation() {
             </tr>`;
         }).join('');
     } catch (e) {
-        document.getElementById('batchTableBody').innerHTML = `<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:#f43f5e;">❌ Batch simulation failed</td></tr>`;
+        document.getElementById('batchTableBody').innerHTML = `<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:#f43f5e;"><span style="display:inline-flex;align-items:center;gap:0.4rem;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Batch simulation failed</span></td></tr>`;
     } finally {
         btn.disabled = false; btn.textContent = 'Run Batch';
     }

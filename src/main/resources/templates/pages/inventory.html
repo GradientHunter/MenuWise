@@ -28,7 +28,8 @@
 
     <!-- Alert Banner -->
     <div id="alertBanner" style="display:none; background: #fff1f2; border-radius: 1rem; padding: 0.65rem 1.15rem; margin-bottom: 1rem; font-size: 0.84rem; font-weight: 700; color: #be123c; align-items: center; gap: 0.5rem;">
-        ⚠️ <span id="alertBannerText">Checking for alerts...</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="alertBannerText">Checking for alerts...</span>
     </div>
 
     <!-- 4 Purposeful Stat Tiles -->
@@ -109,7 +110,7 @@
         <div style="background:#fff; border-radius: 1.5rem; padding: 2rem; width: 100%; max-width: 480px; box-shadow: 0 24px 60px rgba(0,0,0,0.15); transform: translateY(12px); transition: transform 0.25s ease;" id="modalBox">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
                 <h2 style="font-size:1.2rem; font-weight:800; color:var(--text-main);" id="modalTitle">Add Ingredient</h2>
-                <button onclick="closeModal()" style="border:none; background:var(--bg-canvas); border-radius:50%; width:32px; height:32px; cursor:pointer; font-size:1.1rem; color:var(--text-muted); display:flex; align-items:center; justify-content:center; transition:all 0.15s;" onmouseover="this.style.background='#f0e8df'" onmouseout="this.style.background='var(--bg-canvas)'">✕</button>
+                <button onclick="closeModal()" style="border:none; background:var(--bg-canvas); border-radius:50%; width:32px; height:32px; cursor:pointer; color:var(--text-muted); display:flex; align-items:center; justify-content:center; transition:all 0.15s;" onmouseover="this.style.background='#f0e8df'" onmouseout="this.style.background='var(--bg-canvas)'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
             </div>
             <form id="ingredientForm" onsubmit="saveIngredient(event)">
                 <input type="hidden" id="editId">
@@ -178,7 +179,7 @@ async function loadIngredients() {
     } catch (e) {
         document.getElementById('ingredientTableBody').innerHTML = `
             <tr><td colspan="8" style="text-align:center; padding:2rem; color:#e11d48;">
-                ⚠️ Failed to load ingredients. Please refresh.
+                Failed to load ingredients. Please refresh.
             </td></tr>`;
     }
 }
@@ -252,7 +253,7 @@ function renderTable(items) {
     const tbody = document.getElementById('ingredientTableBody');
     if (items.length === 0) {
         tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:2.5rem;color:var(--text-muted);">
-            <div style="font-size:1.75rem;margin-bottom:0.5rem;">📦</div>No ingredients found</td></tr>`;
+            <div style="margin-bottom:0.5rem;"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></div>No ingredients found</td></tr>`;
         return;
     }
 
@@ -267,8 +268,8 @@ function renderTable(items) {
             <td>${getStatusBadge(i)}</td>
             <td style="text-align:right;">
                 <div style="display:inline-flex; gap:0.4rem;">
-                    <button class="action-btn" onclick="openEditModal(${i.id})" style="background:#f1f5f9; color:#0f172a;" title="Edit">✏️ Edit</button>
-                    <button class="action-btn" onclick="deleteIngredient(${i.id}, '${i.name}')" style="background:#fee2e2; color:#ef4444;" title="Delete">🗑</button>
+                    <button class="action-btn" onclick="openEditModal(${i.id})" style="background:#f1f5f9; color:#0f172a; display:inline-flex; align-items:center; gap:0.35rem;" title="Edit"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg> Edit</button>
+                    <button class="action-btn" onclick="deleteIngredient(${i.id}, '${i.name}')" style="background:#fee2e2; color:#ef4444; display:inline-flex; align-items:center; justify-content:center;" title="Delete"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>
                 </div>
             </td>
         </tr>`).join('');
@@ -363,7 +364,7 @@ async function saveIngredient(e) {
         closeModal();
         await loadIngredients();
     } catch (err) {
-        errBox.textContent = '❌ ' + err.message;
+        errBox.textContent = err.message;
         errBox.style.display = 'block';
     } finally {
         btn.disabled = false;
@@ -378,7 +379,7 @@ async function deleteIngredient(id, name) {
         if (!res.ok && res.status !== 204) throw new Error('Delete failed');
         await loadIngredients();
     } catch (e) {
-        alert('❌ ' + e.message);
+        alert(e.message);
     }
 }
 </script>

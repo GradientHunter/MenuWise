@@ -213,11 +213,10 @@ async function loadAnalytics() {
         });
 
         // Top Items Table
-        const medals = ['🥇','🥈','🥉'];
         document.getElementById('topItemsBody').innerHTML = topItems.length > 0
             ? topItems.map((item, i) => `
                 <tr>
-                    <td style="font-size:1.1rem; text-align:center;">${medals[i] || (i+1)}</td>
+                    <td style="text-align:center;"><span style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:6px; font-size:0.75rem; font-weight:800; ${i === 0 ? 'background:#fef3c7; color:#d97706;' : i === 1 ? 'background:#f1f5f9; color:#475569;' : i === 2 ? 'background:#fed7aa; color:#c2410c;' : 'background:#f8fafc; color:#94a3b8;'}">#${i + 1}</span></td>
                     <td style="font-weight:700; color:var(--text-main); font-size:0.88rem;">${item.itemName}</td>
                     <td><span class="badge-growth">${item.quantitySold} sold</span></td>
                     <td style="font-weight:800; color:var(--text-main); text-align:right;">৳ ${Math.round(item.revenue).toLocaleString()}</td>

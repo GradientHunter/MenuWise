@@ -26,8 +26,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.springframework.security.test.context.support.WithMockUser;
+
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithMockUser(username = "admin", authorities = {"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_CASHIER", "ROLE_CHEF"})
 class AllEntityControllersTest {
 
     @Autowired

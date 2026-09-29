@@ -97,7 +97,7 @@
 
         <div id="aiRecipeContainer">
             <div style="text-align:center; padding:2rem; color:#94a3b8;">
-                <div style="font-size:1.5rem; margin-bottom:0.5rem;">✨</div>Synthesizing zero-waste recipe...
+                <div style="width:24px; height:24px; border:2px solid var(--border-color); border-top-color:var(--primary); border-radius:50%; animation: spin 0.8s linear infinite; margin: 0 auto 0.75rem;"></div>Synthesizing zero-waste recipe...
             </div>
         </div>
     </div>
@@ -110,7 +110,7 @@
         </div>
         <div id="proposalsContainer" style="padding:1.25rem;">
             <div style="text-align:center; padding:1.5rem; color:var(--text-muted);">
-                <div style="font-size:1.5rem; margin-bottom:0.5rem;">🔄</div>Loading specials...
+                <div style="width:24px; height:24px; border:2px solid var(--border-color); border-top-color:var(--primary); border-radius:50%; animation: spin 0.8s linear infinite; margin: 0 auto 0.75rem;"></div>Loading specials...
             </div>
         </div>
     </div>
@@ -183,7 +183,7 @@ async function loadAiRecipe() {
     btn.disabled = true;
     container.innerHTML = `
         <div style="text-align:center; padding:2rem; color:#64748b;">
-            <div style="font-size:1.5rem; margin-bottom:0.5rem;">✨</div>
+            <div style="width:24px; height:24px; border:2px solid var(--border-color); border-top-color:var(--primary); border-radius:50%; animation: spin 0.8s linear infinite; margin: 0 auto 0.75rem;"></div>
             Creating zero-waste recipe from expiring ingredients...
         </div>`;
 
@@ -194,8 +194,9 @@ async function loadAiRecipe() {
         renderAiRecipe(currentAiRecipe);
     } catch (err) {
         container.innerHTML = `
-            <div style="text-align:center; padding:1.5rem; color:#f43f5e;">
-                ⚠️ Could not generate AI recipe. Please check connection.
+            <div style="text-align:center; padding:1.5rem; color:#f43f5e; display:flex; align-items:center; justify-content:center; gap:0.5rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Could not generate AI recipe. Please check connection.
             </div>`;
     } finally {
         btn.disabled = false;
@@ -208,7 +209,8 @@ function renderAiRecipe(recipe) {
 
     const ingChips = (recipe.usedIngredients || []).map(u => `
         <span style="display:inline-flex; align-items:center; gap:0.35rem; background:#f0fdf4; color:#15803d; font-size:0.76rem; font-weight:700; padding:0.25rem 0.65rem; border-radius:9999px;">
-            <span>📦</span> ${u.ingredientName} (${(u.quantityPerPortion * 1000).toFixed(0)}${u.unit === 'kg' ? 'g' : (u.unit === 'L' ? 'ml' : ' units')})
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+            ${u.ingredientName} (${(u.quantityPerPortion * 1000).toFixed(0)}${u.unit === 'kg' ? 'g' : (u.unit === 'L' ? 'ml' : ' units')})
         </span>
     `).join('');
 
@@ -260,8 +262,9 @@ function renderAiRecipe(recipe) {
                 ${steps}
             </ol>
         </div>
-        <div id="adoptSuccessAlert" style="display:none; background:#ecfdf5; color:#065f46; border-radius:0.75rem; padding:0.75rem 1rem; margin-top:0.75rem; font-size:0.84rem; font-weight:700;">
-            ✅ Adopted! This dish is now live in the POS catalog under Chef's Specials.
+        <div id="adoptSuccessAlert" style="display:none; background:#ecfdf5; color:#065f46; border-radius:0.75rem; padding:0.75rem 1rem; margin-top:0.75rem; font-size:0.84rem; font-weight:700; align-items:center; gap:0.5rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Adopted! This dish is now live in the POS catalog under Chef's Specials.
         </div>
     `;
 }
@@ -281,11 +284,12 @@ async function adoptAiRecipe() {
 
         if (!res.ok) throw new Error('Adoption failed');
         const savedItem = await res.json();
-        btn.textContent = 'Adopted ✓';
+        btn.textContent = 'Adopted';
         btn.style.background = '#10b981';
-        document.getElementById('adoptSuccessAlert').style.display = 'block';
+        const alertEl = document.getElementById('adoptSuccessAlert');
+        alertEl.style.display = 'flex';
     } catch (e) {
-        alert('❌ ' + e.message);
+        alert(e.message);
         btn.disabled = false;
         btn.textContent = "Adopt as Special (POS)";
     }
@@ -304,7 +308,7 @@ async function loadRescueData() {
         renderProposals(proposals);
         renderForecastTable(forecast);
     } catch (e) {
-        document.getElementById('proposalsContainer').innerHTML = `<div style="color:#e11d48; text-align:center; padding:2rem;">⚠️ Failed to load rescue data.</div>`;
+        document.getElementById('proposalsContainer').innerHTML = `<div style="color:#e11d48; text-align:center; padding:2rem; display:flex; align-items:center; justify-content:center; gap:0.5rem;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Failed to load rescue data.</div>`;
     }
 }
 
@@ -324,7 +328,9 @@ function renderProposals(proposals) {
     const container = document.getElementById('proposalsContainer');
     if (proposals.length === 0) {
         container.innerHTML = `<div style="text-align:center; padding:3rem; color:var(--text-muted);">
-            <div style="font-size:2rem; margin-bottom:0.75rem;">✅</div>
+            <div style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:50%; background:#dcfce7; color:#10b981; margin-bottom:0.75rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
             <p style="font-weight:700;">No at-risk ingredients right now</p>
             <p style="font-size:0.82rem; margin-top:0.25rem;">All inventory is in good condition</p>
         </div>`;
