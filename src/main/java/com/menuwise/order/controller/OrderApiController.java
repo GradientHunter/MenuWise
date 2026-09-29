@@ -1,8 +1,11 @@
 package com.menuwise.order.controller;
-
+ 
+import com.menuwise.domain.menu.ItemIngredient;
 import com.menuwise.domain.order.Order;
+import com.menuwise.domain.order.OrderItem;
 import com.menuwise.order.dto.OrderRequestDto;
 import com.menuwise.order.service.OrderService;
+import com.menuwise.repository.ItemIngredientRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +25,7 @@ import java.util.stream.Collectors;
 public class OrderApiController {
 
     private final OrderService orderService;
+    private final ItemIngredientRepository itemIngredientRepository;
 
     @PostMapping
     public ResponseEntity<Order> checkout(@Valid @RequestBody OrderRequestDto request) {
@@ -68,6 +73,36 @@ public class OrderApiController {
                             })
                             .collect(Collectors.toList());
 
+                    Map<Long, Map<String, Object>> ingredientUsageMap = new HashMap<>();
+                    for (OrderItem oi : order.getItems()) {
+                        if (oi.getItem() != null && oi.getItem().getId() != null) {
+                            int qty = oi.getQuantity() != null ? oi.getQuantity() : 1;
+                            List<ItemIngredient> boms = itemIngredientRepository.findByItemId(oi.getItem().getId());
+                            for (ItemIngredient bom : boms) {
+                                if (bom.getIngredient() != null) {
+                                    Long ingId = bom.getIngredient().getId();
+                                    double needed = (bom.getQuantityRequired() != null ? bom.getQuantityRequired() : 0.0) * qty;
+                                    ingredientUsageMap.compute(ingId, (k, existing) -> {
+                                        if (existing == null) {
+                                            Map<String, Object> map = new HashMap<>();
+                                            map.put("id", ingId);
+                                            map.put("name", bom.getIngredient().getName());
+                                            map.put("unit", bom.getIngredient().getUnit() != null ? bom.getIngredient().getUnit() : "unit");
+                                            map.put("amountUsed", Math.round(needed * 1000.0) / 1000.0);
+                                            return map;
+                                        } else {
+                                            double current = (double) existing.get("amountUsed");
+                                            existing.put("amountUsed", Math.round((current + needed) * 1000.0) / 1000.0);
+                                            return existing;
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
+
+                    List<Map<String, Object>> ingredientsUsedList = new ArrayList<>(ingredientUsageMap.values());
+
                     Map<String, Object> orderMap = new HashMap<>();
                     orderMap.put("id", order.getId());
                     orderMap.put("itemNames", itemNames);
@@ -76,6 +111,7 @@ public class OrderApiController {
                     orderMap.put("amount", order.getTotalAmount() != null ? order.getTotalAmount() : 0.0);
                     orderMap.put("status", order.getStatus() != null ? order.getStatus().name() : "COMPLETED");
                     orderMap.put("items", itemsList);
+                    orderMap.put("ingredientsUsed", ingredientsUsedList);
 
                     return orderMap;
                 })

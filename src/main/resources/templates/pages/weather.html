@@ -1,195 +1,212 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: layout(~{::mainContent}, 'Weather Prep', 'weather')}">
+    th:replace="~{layout/base :: layout(~{::mainContent}, 'Weather Prep', 'weather')}">
+
 <body>
-<div th:fragment="mainContent">
+    <div th:fragment="mainContent">
 
-    <div class="sub-header-bar">
-        <div class="sub-header-left">
-            <h1 class="sub-header-title">Weather Prep</h1>
+        <div class="sub-header-bar">
+            <div class="sub-header-left">
+                <h1 class="sub-header-title">Weather Prep</h1>
+            </div>
+            <div class="sub-header-right">
+                <button class="action-pill-btn" onclick="loadWeatherData(true)" id="refreshBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10" />
+                        <polyline points="1 20 1 14 7 14" />
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                    </svg>
+                    Refresh Live
+                </button>
+            </div>
         </div>
-        <div class="sub-header-right">
-            <button class="action-pill-btn" onclick="loadWeatherData(true)" id="refreshBtn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                Refresh Live
-            </button>
-        </div>
-    </div>
 
-    <!-- Weather Signal Hero Card -->
-    <div id="weatherHeroCard" class="card-panel" style="margin-bottom:1.25rem;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.25rem;">
-            <div>
-                <div style="font-size:0.72rem; font-weight:800; color:#3b82f6; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.25rem;">CURRENT CONDITIONS</div>
-                <div style="display:flex; align-items:baseline; gap:0.85rem;">
-                    <div style="font-size:2.4rem; font-weight:800; letter-spacing:-0.04em; color:#0f172a;" id="heroTemp">—°C</div>
-                    <div>
-                        <div style="font-size:1.15rem; font-weight:800; color:#0f172a;" id="heroCondition">Loading...</div>
-                        <div style="font-size:0.8rem; color:#64748b;" id="heroCity">Dhaka, Bangladesh</div>
+        <!-- Weather Signal Hero Card -->
+        <div id="weatherHeroCard" class="card-panel" style="margin-bottom:1.25rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.25rem;">
+                <div>
+                    <div
+                        style="font-size:0.72rem; font-weight:800; color:#3b82f6; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.25rem;">
+                        CURRENT CONDITIONS</div>
+                    <div style="display:flex; align-items:baseline; gap:0.85rem;">
+                        <div style="font-size:2.4rem; font-weight:800; letter-spacing:-0.04em; color:#0f172a;"
+                            id="heroTemp">—°C</div>
+                        <div>
+                            <div style="font-size:1.15rem; font-weight:800; color:#0f172a;" id="heroCondition">
+                                Loading...</div>
+                            <div style="font-size:0.8rem; color:#64748b;" id="heroCity">Dhaka, Bangladesh</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1.4fr; gap:0.65rem; text-align:center;">
+                    <div style="background:#f8fafc; border-radius:0.75rem; padding:0.6rem 0.85rem;">
+                        <div style="font-size:0.68rem; color:#64748b; font-weight:700; text-transform:uppercase;">
+                            Humidity</div>
+                        <div style="font-size:1.15rem; font-weight:800; color:#0f172a; margin-top:0.1rem;"
+                            id="heroHumidity">—%</div>
+                    </div>
+                    <div style="background:#f8fafc; border-radius:0.75rem; padding:0.6rem 0.85rem;">
+                        <div style="font-size:0.68rem; color:#64748b; font-weight:700; text-transform:uppercase;">Rain
+                            Chance</div>
+                        <div style="font-size:1.15rem; font-weight:800; color:#0f172a; margin-top:0.1rem;"
+                            id="heroRain">—%</div>
+                    </div>
+                    <div style="background:#f8fafc; border-radius:0.75rem; padding:0.6rem 0.85rem;">
+                        <div style="font-size:0.68rem; color:#64748b; font-weight:700; text-transform:uppercase;">Prep
+                            Impact</div>
+                        <div style="font-size:0.92rem; font-weight:800; color:#15803d; margin-top:0.15rem;"
+                            id="heroImpact">—</div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div style="display:grid; grid-template-columns: 1fr 1fr 1.4fr; gap:0.65rem; text-align:center;">
-                <div style="background:#f8fafc; border-radius:0.75rem; padding:0.6rem 0.85rem;">
-                    <div style="font-size:0.68rem; color:#64748b; font-weight:700; text-transform:uppercase;">Humidity</div>
-                    <div style="font-size:1.15rem; font-weight:800; color:#0f172a; margin-top:0.1rem;" id="heroHumidity">—%</div>
-                </div>
-                <div style="background:#f8fafc; border-radius:0.75rem; padding:0.6rem 0.85rem;">
-                    <div style="font-size:0.68rem; color:#64748b; font-weight:700; text-transform:uppercase;">Rain Chance</div>
-                    <div style="font-size:1.15rem; font-weight:800; color:#0f172a; margin-top:0.1rem;" id="heroRain">—%</div>
-                </div>
-                <div style="background:#f8fafc; border-radius:0.75rem; padding:0.6rem 0.85rem;">
-                    <div style="font-size:0.68rem; color:#64748b; font-weight:700; text-transform:uppercase;">Prep Impact</div>
-                    <div style="font-size:0.92rem; font-weight:800; color:#15803d; margin-top:0.15rem;" id="heroImpact">—</div>
-                </div>
+        <!-- Recommendations Table Card Panel -->
+        <div class="card-panel" style="padding:0; overflow:hidden;">
+            <div
+                style="padding:1rem 1.35rem; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,0,0,0.05);">
+                <h3 class="card-panel-title" style="margin:0;">Kitchen Prep Recommendations</h3>
+                <span style="font-size:0.78rem; font-weight:700; color:var(--text-muted);">Weather Multipliers</span>
+            </div>
+
+            <div id="prepLoadingState" style="padding: 3rem; text-align:center; color:var(--text-muted);">
+                <div style="font-size:1.5rem; margin-bottom:0.5rem;">🔄</div>
+                Loading weather recommendations...
+            </div>
+
+            <div class="table-responsive" id="prepTableWrapper" style="display:none;">
+                <table class="calescence-table">
+                    <thead>
+                        <tr>
+                            <th>Menu Item</th>
+                            <th>Condition</th>
+                            <th>Baseline Prep</th>
+                            <th>Multiplier</th>
+                            <th>Recommended Qty</th>
+                            <th style="text-align:right;">Rationale</th>
+                        </tr>
+                    </thead>
+                    <tbody id="prepTableBody"></tbody>
+                </table>
             </div>
         </div>
-    </div>
 
-    <!-- Recommendations Table Card Panel -->
-    <div class="card-panel" style="padding:0; overflow:hidden;">
-        <div style="padding:1rem 1.35rem; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,0,0,0.05);">
-            <h3 class="card-panel-title" style="margin:0;">Kitchen Prep Recommendations</h3>
-            <span style="font-size:0.78rem; font-weight:700; color:var(--text-muted);">Weather Multipliers</span>
-        </div>
-
-        <div id="prepLoadingState" style="padding: 3rem; text-align:center; color:var(--text-muted);">
-            <div style="font-size:1.5rem; margin-bottom:0.5rem;">🔄</div>
-            Loading weather recommendations...
-        </div>
-
-        <div class="table-responsive" id="prepTableWrapper" style="display:none;">
-            <table class="calescence-table">
-                <thead>
-                    <tr>
-                        <th>Menu Item</th>
-                        <th>Condition</th>
-                        <th>Baseline Prep</th>
-                        <th>Multiplier</th>
-                        <th>Recommended Qty</th>
-                        <th style="text-align:right;">Rationale</th>
-                    </tr>
-                </thead>
-                <tbody id="prepTableBody"></tbody>
-            </table>
-        </div>
-    </div>
-
-<script>
-function mapWmoCode(code) {
-    if (code === 0) return 'Clear';
-    if (code >= 1 && code <= 3) return 'Clouds';
-    if (code === 45 || code === 48) return 'Fog';
-    if (code >= 51 && code <= 57) return 'Drizzle';
-    if (code >= 61 && code <= 67) return 'Rain';
-    if (code >= 71 && code <= 77) return 'Snow';
-    if (code >= 80 && code <= 82) return 'Rain';
-    if (code >= 85 && code <= 86) return 'Snow';
-    if (code >= 95 && code <= 99) return 'Thunderstorm';
-    return 'Clouds';
-}
-
-document.addEventListener('DOMContentLoaded', () => loadWeatherData(false));
-
-async function loadWeatherData(isRefresh = false) {
-    const btn = document.getElementById('refreshBtn');
-    if (btn) btn.disabled = true;
-
-    try {
-        let weather = null;
-        let preps = [];
-
-        try {
-            const endpoint = isRefresh ? '/api/v1/prep/refresh' : '/api/v1/prep/weather';
-            const method = isRefresh ? 'POST' : 'GET';
-            const wRes = await fetch(endpoint, { method });
-            if (wRes.ok) weather = await wRes.json();
-        } catch (e) {
-            console.warn('Backend weather fetch failed:', e);
-        }
-
-        try {
-            const pRes = await fetch('/api/v1/prep/recommendations');
-            if (pRes.ok) preps = await pRes.json();
-        } catch (e) {
-            console.warn('Backend prep fetch failed:', e);
-        }
-
-        // If backend returned stale mock data (8°C Rain 82%) or was unavailable
-        if (!weather || (weather.temperatureCelsius === 8 && weather.condition === 'Rain' && weather.humidity === 82)) {
-            try {
-                const omRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=23.8103&longitude=90.4125&current=temperature_2m,relative_humidity_2m,weather_code&daily=precipitation_probability_max&timezone=auto');
-                if (omRes.ok) {
-                    const omData = await omRes.json();
-                    const current = omData.current || {};
-                    const wCode = current.weather_code || 0;
-                    const condition = mapWmoCode(wCode);
-                    const isInclement = wCode >= 51;
-                    const dailyProb = (omData.daily && omData.daily.precipitation_probability_max) || [];
-                    const rainProb = dailyProb.length > 0 ? (dailyProb[0] / 100) : (isInclement ? 0.75 : 0.1);
-
-                    weather = {
-                        temperatureCelsius: current.temperature_2m,
-                        condition: condition,
-                        humidity: current.relative_humidity_2m,
-                        rainProbability: rainProb,
-                        isInclementWeather: isInclement,
-                        city: 'Dhaka, Bangladesh'
-                    };
-                }
-            } catch (err) {
-                console.error('Direct Open-Meteo fetch failed:', err);
+        <script>
+            function mapWmoCode(code) {
+                if (code === 0) return 'Clear';
+                if (code >= 1 && code <= 3) return 'Clouds';
+                if (code === 45 || code === 48) return 'Fog';
+                if (code >= 51 && code <= 57) return 'Drizzle';
+                if (code >= 61 && code <= 67) return 'Rain';
+                if (code >= 71 && code <= 77) return 'Snow';
+                if (code >= 80 && code <= 82) return 'Rain';
+                if (code >= 85 && code <= 86) return 'Snow';
+                if (code >= 95 && code <= 99) return 'Thunderstorm';
+                return 'Clouds';
             }
-        }
 
-        if (weather) {
-            renderWeatherHero(weather);
-        }
-        if (preps && preps.length > 0) {
-            renderPrepTable(preps);
-        } else {
-            const loadingState = document.getElementById('prepLoadingState');
-            if (loadingState) loadingState.innerHTML = '✅ Menu prep recommendations up to date.';
-        }
-    } catch (e) {
-        document.getElementById('heroCondition').textContent = 'Unavailable';
-        document.getElementById('prepLoadingState').innerHTML = '⚠️ Could not load weather data.';
-    } finally {
-        if (btn) btn.disabled = false;
-    }
-}
+            document.addEventListener('DOMContentLoaded', () => loadWeatherData(false));
 
-function renderWeatherHero(weather) {
-    const condEmoji = {
-        'Rain': '🌧️', 'Clear': '☀️', 'Clouds': '⛅', 'Snow': '❄️',
-        'Thunderstorm': '⛈️', 'Drizzle': '🌦️', 'Mist': '🌫️', 'Fog': '🌫️'
-    };
+            async function loadWeatherData(isRefresh = false) {
+                const btn = document.getElementById('refreshBtn');
+                if (btn) btn.disabled = true;
 
-    const emoji = condEmoji[weather.condition] || '🌤️';
-    document.getElementById('heroTemp').textContent = `${weather.temperatureCelsius != null ? weather.temperatureCelsius.toFixed(1) : '—'}°C`;
-    document.getElementById('heroCondition').textContent = `${emoji} ${weather.condition || '—'}`;
-    document.getElementById('heroCity').textContent = weather.city ? weather.city : 'Dhaka, Bangladesh';
-    document.getElementById('heroHumidity').textContent = `${weather.humidity != null ? weather.humidity : '—'}%`;
-    document.getElementById('heroRain').textContent = `${weather.rainProbability != null ? Math.round(weather.rainProbability * 100) : '—'}%`;
+                try {
+                    let weather = null;
+                    let preps = [];
 
-    const impactText = weather.isInclementWeather
-        ? '⬆️ Increase comfort food prep' : (weather.temperatureCelsius && weather.temperatureCelsius > 24)
-        ? '⬆️ Increase chilled drinks' : '✅ Baseline prep optimal';
-    document.getElementById('heroImpact').textContent = impactText;
-}
+                    try {
+                        const endpoint = isRefresh ? '/api/v1/prep/refresh' : '/api/v1/prep/weather';
+                        const method = isRefresh ? 'POST' : 'GET';
+                        const wRes = await fetch(endpoint, { method });
+                        if (wRes.ok) weather = await wRes.json();
+                    } catch (e) {
+                        console.warn('Backend weather fetch failed:', e);
+                    }
 
-function renderPrepTable(preps) {
-    document.getElementById('prepLoadingState').style.display = 'none';
-    document.getElementById('prepTableWrapper').style.display = 'block';
+                    try {
+                        const pRes = await fetch('/api/v1/prep/recommendations');
+                        if (pRes.ok) preps = await pRes.json();
+                    } catch (e) {
+                        console.warn('Backend prep fetch failed:', e);
+                    }
 
-    const tbody = document.getElementById('prepTableBody');
-    tbody.innerHTML = preps.map(p => {
-        const mult = p.weatherMultiplier || 1.0;
-        const multLabel = mult > 1.0 ? `+${((mult-1)*100).toFixed(0)}%` : mult < 1.0 ? `${((mult-1)*100).toFixed(0)}%` : 'Baseline';
-        const multBadge = mult > 1.0 ? 'badge-growth' : mult < 1.0 ? 'badge-danger' : 'badge-lime';
+                    // If backend returned stale mock data (8°C Rain 82%) or was unavailable
+                    if (!weather || (weather.temperatureCelsius === 8 && weather.condition === 'Rain' && weather.humidity === 82)) {
+                        try {
+                            const omRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=23.8103&longitude=90.4125&current=temperature_2m,relative_humidity_2m,weather_code&daily=precipitation_probability_max&timezone=auto');
+                            if (omRes.ok) {
+                                const omData = await omRes.json();
+                                const current = omData.current || {};
+                                const wCode = current.weather_code || 0;
+                                const condition = mapWmoCode(wCode);
+                                const isInclement = wCode >= 51;
+                                const dailyProb = (omData.daily && omData.daily.precipitation_probability_max) || [];
+                                const rainProb = dailyProb.length > 0 ? (dailyProb[0] / 100) : (isInclement ? 0.75 : 0.1);
 
-        return `<tr>
+                                weather = {
+                                    temperatureCelsius: current.temperature_2m,
+                                    condition: condition,
+                                    humidity: current.relative_humidity_2m,
+                                    rainProbability: rainProb,
+                                    isInclementWeather: isInclement,
+                                    city: 'Dhaka, Bangladesh'
+                                };
+                            }
+                        } catch (err) {
+                            console.error('Direct Open-Meteo fetch failed:', err);
+                        }
+                    }
+
+                    if (weather) {
+                        renderWeatherHero(weather);
+                    }
+                    if (preps && preps.length > 0) {
+                        renderPrepTable(preps);
+                    } else {
+                        const loadingState = document.getElementById('prepLoadingState');
+                        if (loadingState) loadingState.innerHTML = '✅ Menu prep recommendations up to date.';
+                    }
+                } catch (e) {
+                    document.getElementById('heroCondition').textContent = 'Unavailable';
+                    document.getElementById('prepLoadingState').innerHTML = '⚠️ Could not load weather data.';
+                } finally {
+                    if (btn) btn.disabled = false;
+                }
+            }
+
+            function renderWeatherHero(weather) {
+                const condEmoji = {
+                    'Rain': '🌧️', 'Clear': '☀️', 'Clouds': '⛅', 'Snow': '❄️',
+                    'Thunderstorm': '⛈️', 'Drizzle': '🌦️', 'Mist': '🌫️', 'Fog': '🌫️'
+                };
+
+                const emoji = condEmoji[weather.condition] || '🌤️';
+                document.getElementById('heroTemp').textContent = `${weather.temperatureCelsius != null ? weather.temperatureCelsius.toFixed(1) : '—'}°C`;
+                document.getElementById('heroCondition').textContent = `${emoji} ${weather.condition || '—'}`;
+                document.getElementById('heroCity').textContent = weather.city ? weather.city : 'Dhaka, Bangladesh';
+                document.getElementById('heroHumidity').textContent = `${weather.humidity != null ? weather.humidity : '—'}%`;
+                document.getElementById('heroRain').textContent = `${weather.rainProbability != null ? Math.round(weather.rainProbability * 100) : '—'}%`;
+
+                const impactText = weather.isInclementWeather
+                    ? '⬆️ Increase comfort food prep' : (weather.temperatureCelsius && weather.temperatureCelsius > 24)
+                        ? '⬆️ Increase chilled drinks' : '✅ Baseline prep optimal';
+                document.getElementById('heroImpact').textContent = impactText;
+            }
+
+            function renderPrepTable(preps) {
+                document.getElementById('prepLoadingState').style.display = 'none';
+                document.getElementById('prepTableWrapper').style.display = 'block';
+
+                const tbody = document.getElementById('prepTableBody');
+                tbody.innerHTML = preps.map(p => {
+                    const mult = p.weatherMultiplier || 1.0;
+                    const multLabel = mult > 1.0 ? `+${((mult - 1) * 100).toFixed(0)}%` : mult < 1.0 ? `${((mult - 1) * 100).toFixed(0)}%` : 'Baseline';
+                    const multBadge = mult > 1.0 ? 'badge-growth' : mult < 1.0 ? 'badge-danger' : 'badge-lime';
+
+                    return `<tr>
             <td>
                 <div style="font-weight:700; color:var(--text-main); font-size:0.88rem;">${p.itemName}</div>
             </td>
@@ -199,9 +216,10 @@ function renderPrepTable(preps) {
             <td style="font-weight:800; color:var(--text-main); font-size:0.92rem;">${p.recommendedQuantity} units</td>
             <td style="font-size:0.8rem; color:var(--text-muted); text-align:right; max-width:280px;">${p.rationale || '—'}</td>
         </tr>`;
-    }).join('');
-}
-</script>
-</div>
+                }).join('');
+            }
+        </script>
+    </div>
 </body>
+
 </html>
