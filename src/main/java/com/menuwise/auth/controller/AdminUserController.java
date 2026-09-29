@@ -42,6 +42,7 @@ public class AdminUserController {
         model.addAttribute("managerCount", managerCount);
         model.addAttribute("cashierCount", cashierCount);
         model.addAttribute("activeRoute", "admin-users");
+        model.addAttribute("pageTitle", "Staff Management");
         return "pages/admin-users";
     }
 
