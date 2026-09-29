@@ -1,226 +1,288 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: layout(~{::mainContent}, 'Rescue Menu', 'rescue')}">
+    th:replace="~{layout/base :: layout(~{::mainContent}, 'Rescue Menu', 'rescue')}">
+
 <body>
-<div th:fragment="mainContent">
+    <div th:fragment="mainContent">
 
-    <div class="sub-header-bar">
-        <div class="sub-header-left">
-            <h1 class="sub-header-title">Food Rescue</h1>
-        </div>
-        <div class="sub-header-right">
-            <a th:href="@{/pos}" class="action-pill-btn">
-                POS Register ›
-            </a>
-        </div>
-    </div>
-
-    <!-- Tab Navigation Bar -->
-    <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:1.25rem; background:#f8fafc; border:1px solid rgba(0,0,0,0.05); border-radius:1rem; padding:0.35rem; width:fit-content;">
-        <button id="tabAiBtn" onclick="switchRescueTab('ai')"
-            style="display:flex; align-items:center; gap:0.45rem; padding:0.55rem 1.15rem; border-radius:0.75rem; border:none; font-size:0.85rem; font-weight:700; cursor:pointer; transition:all 0.2s ease; background:#0f172a; color:#ffffff;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-            AI Special Dish
-        </button>
-        <button id="tabDiscountsBtn" onclick="switchRescueTab('discounts')"
-            style="display:flex; align-items:center; gap:0.45rem; padding:0.55rem 1.15rem; border-radius:0.75rem; border:none; font-size:0.85rem; font-weight:700; cursor:pointer; transition:all 0.2s ease; background:none; color:#64748b;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-            Menu Discounts
-        </button>
-        <button id="tabForecastBtn" onclick="switchRescueTab('forecast')"
-            style="display:flex; align-items:center; gap:0.45rem; padding:0.55rem 1.15rem; border-radius:0.75rem; border:none; font-size:0.85rem; font-weight:700; cursor:pointer; transition:all 0.2s ease; background:none; color:#64748b;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-            Spoilage Data
-        </button>
-    </div>
-
-    <!-- 4 Clean Stat Tiles -->
-    <div class="grid-stats">
-        <div class="card-stat">
-            <div class="card-stat-header">
-                <span class="card-stat-title">At-Risk Items</span>
-                <div class="card-stat-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                </div>
+        <div class="sub-header-bar">
+            <div class="sub-header-left">
+                <h1 class="sub-header-title">Food Rescue</h1>
             </div>
-            <div class="card-stat-value" id="statAtRisk">—</div>
+            <div class="sub-header-right">
+                <a th:href="@{/pos}" class="action-pill-btn">
+                    POS Register ›
+                </a>
+            </div>
         </div>
 
-        <div class="card-stat">
-            <div class="card-stat-header">
-                <span class="card-stat-title">High Urgency</span>
-                <div class="card-stat-icon" style="color:#f43f5e; background:#ffe4e6;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                </div>
-            </div>
-            <div class="card-stat-value" style="color:#f43f5e;" id="statHigh">—</div>
-        </div>
-
-        <div class="card-stat">
-            <div class="card-stat-header">
-                <span class="card-stat-title">Active Specials</span>
-                <div class="card-stat-icon" style="color:#10b981; background:#dcfce7;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-                </div>
-            </div>
-            <div class="card-stat-value" id="statSpecials">—</div>
-        </div>
-
-        <div class="card-stat">
-            <div class="card-stat-header">
-                <span class="card-stat-title">Waste Preventable</span>
-                <div class="card-stat-icon" style="color:#3b82f6; background:#eff6ff;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                </div>
-            </div>
-            <div class="card-stat-value" id="statWasteVal">—</div>
-        </div>
-    </div>
-
-    <!-- 1. TAB 1: AI RESCUE CHEF (Default View - Clean & Light) -->
-    <div id="viewAiChef" class="card-panel" style="background:#ffffff; border:1px solid #e2e8f0; padding:1.5rem; margin-bottom:1.25rem; border-radius:1.15rem; box-shadow:0 2px 12px rgba(15,23,42,0.02);">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; margin-bottom:1.25rem; padding-bottom:1rem; border-bottom:1px solid #f1f5f9;">
-            <div style="display:flex; align-items:center; gap:0.6rem;">
-                <span style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:8px; background:#eff6ff; color:#3b82f6;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-                </span>
-                <div>
-                    <h2 style="font-size:1.1rem; font-weight:800; margin:0; color:#0f172a;">AI Chef Special</h2>
-                    <p style="font-size:0.78rem; color:#64748b; margin:0;">Synthesizes a fresh recipe using today's expiring stock.</p>
-                </div>
-            </div>
-            <button id="generateAiBtn" onclick="loadAiRecipe()" class="btn-primary" style="background:#f8fafc; color:#0f172a; border:1px solid #e2e8f0; font-weight:700; box-shadow:none;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-                Re-Generate
+        <!-- Tab Navigation Bar -->
+        <div
+            style="display:flex; align-items:center; gap:0.5rem; margin-bottom:1.25rem; background:#f8fafc; border:1px solid rgba(0,0,0,0.05); border-radius:1rem; padding:0.35rem; width:fit-content;">
+            <button id="tabAiBtn" onclick="switchRescueTab('ai')"
+                style="display:flex; align-items:center; gap:0.45rem; padding:0.55rem 1.15rem; border-radius:0.75rem; border:none; font-size:0.85rem; font-weight:700; cursor:pointer; transition:all 0.2s ease; background:#0f172a; color:#ffffff;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                </svg>
+                AI Special Dish
+            </button>
+            <button id="tabDiscountsBtn" onclick="switchRescueTab('discounts')"
+                style="display:flex; align-items:center; gap:0.45rem; padding:0.55rem 1.15rem; border-radius:0.75rem; border:none; font-size:0.85rem; font-weight:700; cursor:pointer; transition:all 0.2s ease; background:none; color:#64748b;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                    <line x1="7" y1="7" x2="7.01" y2="7" />
+                </svg>
+                Menu Discounts
+            </button>
+            <button id="tabForecastBtn" onclick="switchRescueTab('forecast')"
+                style="display:flex; align-items:center; gap:0.45rem; padding:0.55rem 1.15rem; border-radius:0.75rem; border:none; font-size:0.85rem; font-weight:700; cursor:pointer; transition:all 0.2s ease; background:none; color:#64748b;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 3v18h18" />
+                    <path d="m19 9-5 5-4-4-3 3" />
+                </svg>
+                Spoilage Data
             </button>
         </div>
 
-        <div id="aiRecipeContainer">
-            <div style="text-align:center; padding:2rem; color:#94a3b8;">
-                <div style="font-size:1.5rem; margin-bottom:0.5rem;">✨</div>Synthesizing zero-waste recipe...
+        <!-- 4 Clean Stat Tiles -->
+        <div class="grid-stats">
+            <div class="card-stat">
+                <div class="card-stat-header">
+                    <span class="card-stat-title">At-Risk Items</span>
+                    <div class="card-stat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                            <line x1="12" y1="9" x2="12" y2="13" />
+                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="card-stat-value" id="statAtRisk">—</div>
+            </div>
+
+            <div class="card-stat">
+                <div class="card-stat-header">
+                    <span class="card-stat-title">High Urgency</span>
+                    <div class="card-stat-icon" style="color:#f43f5e; background:#ffe4e6;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="card-stat-value" style="color:#f43f5e;" id="statHigh">—</div>
+            </div>
+
+            <div class="card-stat">
+                <div class="card-stat-header">
+                    <span class="card-stat-title">Active Specials</span>
+                    <div class="card-stat-icon" style="color:#10b981; background:#dcfce7;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                            <line x1="7" y1="7" x2="7.01" y2="7" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="card-stat-value" id="statSpecials">—</div>
+            </div>
+
+            <div class="card-stat">
+                <div class="card-stat-header">
+                    <span class="card-stat-title">Waste Preventable</span>
+                    <div class="card-stat-icon" style="color:#3b82f6; background:#eff6ff;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="2" x2="12" y2="22" />
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="card-stat-value" id="statWasteVal">—</div>
             </div>
         </div>
-    </div>
 
-    <!-- 2. TAB 2: MENU DISCOUNTS (Existing Dishes with Markdowns) -->
-    <div id="viewDiscounts" class="card-panel" style="display:none; padding:0; overflow:hidden; margin-bottom:1.25rem;">
-        <div style="padding:1rem 1.35rem; border-bottom:1px solid rgba(0,0,0,0.05); display:flex; justify-content:space-between; align-items:center;">
-            <h3 class="card-panel-title" style="margin:0;">Existing Menu Discounts</h3>
-            <span style="font-size:0.78rem; font-weight:700; color:var(--text-muted);">Expiring Stock Markdowns</span>
-        </div>
-        <div id="proposalsContainer" style="padding:1.25rem;">
-            <div style="text-align:center; padding:1.5rem; color:var(--text-muted);">
-                <div style="font-size:1.5rem; margin-bottom:0.5rem;">🔄</div>Loading specials...
+        <!-- 1. TAB 1: AI RESCUE CHEF (Default View - Clean & Light) -->
+        <div id="viewAiChef" class="card-panel"
+            style="background:#ffffff; border:1px solid #e2e8f0; padding:1.5rem; margin-bottom:1.25rem; border-radius:1.15rem; box-shadow:0 2px 12px rgba(15,23,42,0.02);">
+            <div
+                style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; margin-bottom:1.25rem; padding-bottom:1rem; border-bottom:1px solid #f1f5f9;">
+                <div style="display:flex; align-items:center; gap:0.6rem;">
+                    <span
+                        style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:8px; background:#eff6ff; color:#3b82f6;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                        </svg>
+                    </span>
+                    <div>
+                        <h2 style="font-size:1.1rem; font-weight:800; margin:0; color:#0f172a;">AI Chef Special</h2>
+                        <p style="font-size:0.78rem; color:#64748b; margin:0;">Synthesizes a fresh recipe using today's
+                            expiring stock.</p>
+                    </div>
+                </div>
+                <button id="generateAiBtn" onclick="loadAiRecipe()" class="btn-primary"
+                    style="background:#f8fafc; color:#0f172a; border:1px solid #e2e8f0; font-weight:700; box-shadow:none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+                    </svg>
+                    Re-Generate
+                </button>
+            </div>
+
+            <div id="aiRecipeContainer">
+                <div style="text-align:center; padding:2rem; color:#94a3b8;">
+                    <div style="font-size:1.5rem; margin-bottom:0.5rem;">✨</div>Synthesizing zero-waste recipe...
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- 3. TAB 3: FULL SPOILAGE FORECAST TABLE -->
-    <div id="viewForecast" class="card-panel" style="display:none; padding:0; overflow:hidden;">
-        <div style="padding:1rem 1.35rem; border-bottom:1px solid rgba(0,0,0,0.05); display:flex; justify-content:space-between; align-items:center;">
-            <h3 class="card-panel-title" style="margin:0;">All Ingredients Risk Analysis</h3>
-            <span style="font-size:0.78rem; font-weight:700; color:var(--text-muted);">Predicted Waste by Item</span>
+        <!-- 2. TAB 2: MENU DISCOUNTS (Existing Dishes with Markdowns) -->
+        <div id="viewDiscounts" class="card-panel"
+            style="display:none; padding:0; overflow:hidden; margin-bottom:1.25rem;">
+            <div
+                style="padding:1rem 1.35rem; border-bottom:1px solid rgba(0,0,0,0.05); display:flex; justify-content:space-between; align-items:center;">
+                <h3 class="card-panel-title" style="margin:0;">Existing Menu Discounts</h3>
+                <span style="font-size:0.78rem; font-weight:700; color:var(--text-muted);">Expiring Stock
+                    Markdowns</span>
+            </div>
+            <div id="proposalsContainer" style="padding:1.25rem;">
+                <div style="text-align:center; padding:1.5rem; color:var(--text-muted);">
+                    <div style="font-size:1.5rem; margin-bottom:0.5rem;">🔄</div>Loading specials...
+                </div>
+            </div>
         </div>
-        <div class="table-responsive">
-            <table class="calescence-table">
-                <thead>
-                    <tr>
-                        <th>Ingredient</th>
-                        <th>Current Stock</th>
-                        <th>Predicted Waste</th>
-                        <th>Risk Level</th>
-                        <th style="text-align:right;">Urgency</th>
-                    </tr>
-                </thead>
-                <tbody id="forecastTableBody">
-                    <tr><td colspan="5" style="text-align:center;padding:2.5rem;color:var(--text-muted);">Loading data...</td></tr>
-                </tbody>
-            </table>
+
+        <!-- 3. TAB 3: FULL SPOILAGE FORECAST TABLE -->
+        <div id="viewForecast" class="card-panel" style="display:none; padding:0; overflow:hidden;">
+            <div
+                style="padding:1rem 1.35rem; border-bottom:1px solid rgba(0,0,0,0.05); display:flex; justify-content:space-between; align-items:center;">
+                <h3 class="card-panel-title" style="margin:0;">All Ingredients Risk Analysis</h3>
+                <span style="font-size:0.78rem; font-weight:700; color:var(--text-muted);">Predicted Waste by
+                    Item</span>
+            </div>
+            <div class="table-responsive">
+                <table class="calescence-table">
+                    <thead>
+                        <tr>
+                            <th>Ingredient</th>
+                            <th>Current Stock</th>
+                            <th>Predicted Waste</th>
+                            <th>Risk Level</th>
+                            <th style="text-align:right;">Urgency</th>
+                        </tr>
+                    </thead>
+                    <tbody id="forecastTableBody">
+                        <tr>
+                            <td colspan="5" style="text-align:center;padding:2.5rem;color:var(--text-muted);">Loading
+                                data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
-<style>
-.proposal-bento-card {
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    border-radius: 1rem;
-    padding: 1.15rem;
-    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);
-}
-.risk-pill-bar { height: 6px; border-radius: 9999px; background: #f1f5f9; overflow: hidden; }
-.risk-pill-fill { height: 100%; border-radius: 9999px; }
-</style>
+        <style>
+            .proposal-bento-card {
+                background: #ffffff;
+                border: 1px solid rgba(0, 0, 0, 0.06);
+                border-radius: 1rem;
+                padding: 1.15rem;
+                box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);
+            }
 
-<script>
-let currentAiRecipe = null;
+            .risk-pill-bar {
+                height: 6px;
+                border-radius: 9999px;
+                background: #f1f5f9;
+                overflow: hidden;
+            }
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadRescueData();
-    loadAiRecipe();
-});
+            .risk-pill-fill {
+                height: 100%;
+                border-radius: 9999px;
+            }
+        </style>
 
-function switchRescueTab(tab) {
-    const tabs = [
-        { id: 'tabAiBtn',        key: 'ai' },
-        { id: 'tabDiscountsBtn', key: 'discounts' },
-        { id: 'tabForecastBtn',  key: 'forecast' }
-    ];
-    tabs.forEach(({ id, key }) => {
-        const btn = document.getElementById(id);
-        const isActive = key === tab;
-        btn.style.background = isActive ? '#0f172a' : 'none';
-        btn.style.color      = isActive ? '#ffffff'  : '#64748b';
-    });
+        <script>
+            let currentAiRecipe = null;
 
-    document.getElementById('viewAiChef').style.display    = (tab === 'ai')        ? 'block' : 'none';
-    document.getElementById('viewDiscounts').style.display = (tab === 'discounts') ? 'block' : 'none';
-    document.getElementById('viewForecast').style.display  = (tab === 'forecast')  ? 'block' : 'none';
-}
+            document.addEventListener('DOMContentLoaded', () => {
+                loadRescueData();
+                loadAiRecipe();
+            });
 
-async function loadAiRecipe() {
-    const container = document.getElementById('aiRecipeContainer');
-    const btn = document.getElementById('generateAiBtn');
-    btn.disabled = true;
-    container.innerHTML = `
+            function switchRescueTab(tab) {
+                const tabs = [
+                    { id: 'tabAiBtn', key: 'ai' },
+                    { id: 'tabDiscountsBtn', key: 'discounts' },
+                    { id: 'tabForecastBtn', key: 'forecast' }
+                ];
+                tabs.forEach(({ id, key }) => {
+                    const btn = document.getElementById(id);
+                    const isActive = key === tab;
+                    btn.style.background = isActive ? '#0f172a' : 'none';
+                    btn.style.color = isActive ? '#ffffff' : '#64748b';
+                });
+
+                document.getElementById('viewAiChef').style.display = (tab === 'ai') ? 'block' : 'none';
+                document.getElementById('viewDiscounts').style.display = (tab === 'discounts') ? 'block' : 'none';
+                document.getElementById('viewForecast').style.display = (tab === 'forecast') ? 'block' : 'none';
+            }
+
+            async function loadAiRecipe() {
+                const container = document.getElementById('aiRecipeContainer');
+                const btn = document.getElementById('generateAiBtn');
+                btn.disabled = true;
+                container.innerHTML = `
         <div style="text-align:center; padding:2rem; color:#64748b;">
             <div style="font-size:1.5rem; margin-bottom:0.5rem;">✨</div>
             Creating zero-waste recipe from expiring ingredients...
         </div>`;
 
-    try {
-        const res = await fetch('/api/v1/rescue/ai-recipe');
-        if (!res.ok) throw new Error('Failed to generate AI recipe');
-        currentAiRecipe = await res.json();
-        renderAiRecipe(currentAiRecipe);
-    } catch (err) {
-        container.innerHTML = `
+                try {
+                    const res = await fetch('/api/v1/rescue/ai-recipe');
+                    if (!res.ok) throw new Error('Failed to generate AI recipe');
+                    currentAiRecipe = await res.json();
+                    renderAiRecipe(currentAiRecipe);
+                } catch (err) {
+                    container.innerHTML = `
             <div style="text-align:center; padding:1.5rem; color:#f43f5e;">
                 ⚠️ Could not generate AI recipe. Please check connection.
             </div>`;
-    } finally {
-        btn.disabled = false;
-    }
-}
+                } finally {
+                    btn.disabled = false;
+                }
+            }
 
-function renderAiRecipe(recipe) {
-    const container = document.getElementById('aiRecipeContainer');
-    if (!recipe) return;
+            function renderAiRecipe(recipe) {
+                const container = document.getElementById('aiRecipeContainer');
+                if (!recipe) return;
 
-    const ingChips = (recipe.usedIngredients || []).map(u => `
+                const ingChips = (recipe.usedIngredients || []).map(u => `
         <span style="display:inline-flex; align-items:center; gap:0.35rem; background:#f0fdf4; color:#15803d; font-size:0.76rem; font-weight:700; padding:0.25rem 0.65rem; border-radius:9999px;">
             <span>📦</span> ${u.ingredientName} (${(u.quantityPerPortion * 1000).toFixed(0)}${u.unit === 'kg' ? 'g' : (u.unit === 'L' ? 'ml' : ' units')})
         </span>
     `).join('');
 
-    const steps = (recipe.preparationSteps || []).map((step, idx) => `
+                const steps = (recipe.preparationSteps || []).map((step, idx) => `
         <li style="margin-bottom:0.4rem; color:#334155; font-size:0.84rem; line-height:1.4;">
             <strong style="color:#0f172a;">Step ${idx + 1}:</strong> ${step}
         </li>
     `).join('');
 
-    const badgeText = (recipe.aiModelUsed && !recipe.aiModelUsed.includes('Google Gemini')) ? recipe.aiModelUsed : 'Intelligent suggestion';
+                const badgeText = (recipe.aiModelUsed && !recipe.aiModelUsed.includes('Google Gemini')) ? recipe.aiModelUsed : 'Intelligent suggestion';
 
-    container.innerHTML = `
+                container.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;">
             <div>
                 <span style="font-size:0.75rem; font-weight:800; color:#3b82f6; letter-spacing:0.02em;">${badgeText}</span>
@@ -266,82 +328,82 @@ function renderAiRecipe(recipe) {
             ✅ Adopted! This dish is now live in the POS catalog under Chef's Specials.
         </div>
     `;
-}
+            }
 
-async function adoptAiRecipe() {
-    if (!currentAiRecipe) return;
-    const btn = document.getElementById('adoptAiBtn');
-    btn.disabled = true;
-    btn.textContent = 'Adopting...';
+            async function adoptAiRecipe() {
+                if (!currentAiRecipe) return;
+                const btn = document.getElementById('adoptAiBtn');
+                btn.disabled = true;
+                btn.textContent = 'Adopting...';
 
-    try {
-        const res = await fetch('/api/v1/rescue/ai-recipe/adopt', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(currentAiRecipe)
-        });
+                try {
+                    const res = await fetch('/api/v1/rescue/ai-recipe/adopt', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(currentAiRecipe)
+                    });
 
-        if (!res.ok) throw new Error('Adoption failed');
-        const savedItem = await res.json();
-        btn.textContent = 'Adopted ✓';
-        btn.style.background = '#10b981';
-        document.getElementById('adoptSuccessAlert').style.display = 'block';
-    } catch (e) {
-        alert('❌ ' + e.message);
-        btn.disabled = false;
-        btn.textContent = "Adopt as Special (POS)";
-    }
-}
+                    if (!res.ok) throw new Error('Adoption failed');
+                    const savedItem = await res.json();
+                    btn.textContent = 'Adopted ✓';
+                    btn.style.background = '#10b981';
+                    document.getElementById('adoptSuccessAlert').style.display = 'block';
+                } catch (e) {
+                    alert('❌ ' + e.message);
+                    btn.disabled = false;
+                    btn.textContent = "Adopt as Special (POS)";
+                }
+            }
 
-async function loadRescueData() {
-    try {
-        const [proposalsRes, forecastRes] = await Promise.all([
-            fetch('/api/v1/rescue/proposals'),
-            fetch('/api/v1/rescue/spoilage-forecast')
-        ]);
-        const proposals = await proposalsRes.json();
-        const forecast  = await forecastRes.json();
+            async function loadRescueData() {
+                try {
+                    const [proposalsRes, forecastRes] = await Promise.all([
+                        fetch('/api/v1/rescue/proposals'),
+                        fetch('/api/v1/rescue/spoilage-forecast')
+                    ]);
+                    const proposals = await proposalsRes.json();
+                    const forecast = await forecastRes.json();
 
-        renderStats(proposals, forecast);
-        renderProposals(proposals);
-        renderForecastTable(forecast);
-    } catch (e) {
-        document.getElementById('proposalsContainer').innerHTML = `<div style="color:#e11d48; text-align:center; padding:2rem;">⚠️ Failed to load rescue data.</div>`;
-    }
-}
+                    renderStats(proposals, forecast);
+                    renderProposals(proposals);
+                    renderForecastTable(forecast);
+                } catch (e) {
+                    document.getElementById('proposalsContainer').innerHTML = `<div style="color:#e11d48; text-align:center; padding:2rem;">⚠️ Failed to load rescue data.</div>`;
+                }
+            }
 
-function renderStats(proposals, forecast) {
-    const atRisk   = forecast.filter(f => f.riskTier !== 'LOW').length;
-    const high     = forecast.filter(f => f.riskTier === 'HIGH').length;
-    const specials = [...new Set(proposals.map(p => p.suggestedItemId))].length;
-    const wasteVal = forecast.reduce((s, f) => s + (f.predictedWasteQty || 0) * 50, 0);
+            function renderStats(proposals, forecast) {
+                const atRisk = forecast.filter(f => f.riskTier !== 'LOW').length;
+                const high = forecast.filter(f => f.riskTier === 'HIGH').length;
+                const specials = [...new Set(proposals.map(p => p.suggestedItemId))].length;
+                const wasteVal = forecast.reduce((s, f) => s + (f.predictedWasteQty || 0) * 50, 0);
 
-    document.getElementById('statAtRisk').textContent    = atRisk;
-    document.getElementById('statHigh').textContent      = high;
-    document.getElementById('statSpecials').textContent  = specials;
-    document.getElementById('statWasteVal').textContent  = `৳ ${Math.round(wasteVal).toLocaleString()}`;
-}
+                document.getElementById('statAtRisk').textContent = atRisk;
+                document.getElementById('statHigh').textContent = high;
+                document.getElementById('statSpecials').textContent = specials;
+                document.getElementById('statWasteVal').textContent = `৳ ${Math.round(wasteVal).toLocaleString()}`;
+            }
 
-function renderProposals(proposals) {
-    const container = document.getElementById('proposalsContainer');
-    if (proposals.length === 0) {
-        container.innerHTML = `<div style="text-align:center; padding:3rem; color:var(--text-muted);">
+            function renderProposals(proposals) {
+                const container = document.getElementById('proposalsContainer');
+                if (proposals.length === 0) {
+                    container.innerHTML = `<div style="text-align:center; padding:3rem; color:var(--text-muted);">
             <div style="font-size:2rem; margin-bottom:0.75rem;">✅</div>
             <p style="font-weight:700;">No at-risk ingredients right now</p>
             <p style="font-size:0.82rem; margin-top:0.25rem;">All inventory is in good condition</p>
         </div>`;
-        return;
-    }
+                    return;
+                }
 
-    const grouped = {};
-    proposals.forEach(p => {
-        if (!grouped[p.ingredientId]) grouped[p.ingredientId] = { ...p, dishes: [] };
-        grouped[p.ingredientId].dishes.push({ id: p.suggestedItemId, name: p.suggestedItemName, original: p.originalPrice, rescue: p.rescuePrice, discount: p.discountPercentage });
-    });
+                const grouped = {};
+                proposals.forEach(p => {
+                    if (!grouped[p.ingredientId]) grouped[p.ingredientId] = { ...p, dishes: [] };
+                    grouped[p.ingredientId].dishes.push({ id: p.suggestedItemId, name: p.suggestedItemName, original: p.originalPrice, rescue: p.rescuePrice, discount: p.discountPercentage });
+                });
 
-    const riskBadges = { HIGH: 'badge-danger', MEDIUM: 'badge-warning', LOW: 'badge-growth' };
+                const riskBadges = { HIGH: 'badge-danger', MEDIUM: 'badge-warning', LOW: 'badge-growth' };
 
-    container.innerHTML = `<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem;">
+                container.innerHTML = `<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem;">
         ${Object.values(grouped).map(g => `
         <div class="proposal-bento-card">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.5rem;">
@@ -364,21 +426,21 @@ function renderProposals(proposals) {
             </div>
         </div>`).join('')}
     </div>`;
-}
+            }
 
-function renderForecastTable(forecast) {
-    const tbody = document.getElementById('forecastTableBody');
-    if (forecast.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);">No data</td></tr>`;
-        return;
-    }
+            function renderForecastTable(forecast) {
+                const tbody = document.getElementById('forecastTableBody');
+                if (forecast.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted);">No data</td></tr>`;
+                    return;
+                }
 
-    const tierBadge = { HIGH: 'badge-danger', MEDIUM: 'badge-warning', LOW: 'badge-growth' };
-    const tierColor = { HIGH: '#f43f5e', MEDIUM: '#f59e0b', LOW: '#10b981' };
+                const tierBadge = { HIGH: 'badge-danger', MEDIUM: 'badge-warning', LOW: 'badge-growth' };
+                const tierColor = { HIGH: '#f43f5e', MEDIUM: '#f59e0b', LOW: '#10b981' };
 
-    tbody.innerHTML = forecast.map(f => {
-        const barColor = tierColor[f.riskTier] || '#94a3b8';
-        return `<tr>
+                tbody.innerHTML = forecast.map(f => {
+                    const barColor = tierColor[f.riskTier] || '#94a3b8';
+                    return `<tr>
             <td style="font-weight:700; font-size:0.88rem;">${f.ingredientName}</td>
             <td style="font-size:0.84rem;">${f.currentStock?.toFixed(2)}</td>
             <td style="color:#f43f5e; font-weight:800; font-size:0.88rem;">${f.predictedWasteQty?.toFixed(2)}</td>
@@ -392,9 +454,10 @@ function renderForecastTable(forecast) {
             </td>
             <td style="text-align:right;"><span class="${tierBadge[f.riskTier] || 'badge-growth'}">${f.riskTier}</span></td>
         </tr>`;
-    }).join('');
-}
-</script>
-</div>
+                }).join('');
+            }
+        </script>
+    </div>
 </body>
+
 </html>
