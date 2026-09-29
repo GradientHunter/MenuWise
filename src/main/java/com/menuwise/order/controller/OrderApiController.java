@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -54,14 +55,29 @@ public class OrderApiController {
                             .collect(Collectors.joining(", "));
                     if (itemNames.isBlank()) itemNames = "Order #" + order.getId();
 
-                    return Map.<String, Object>of(
-                            "id",          order.getId(),
-                            "itemNames",   itemNames,
-                            "date",        order.getOrderTimestamp().format(dateFmt),
-                            "time",        order.getOrderTimestamp().format(timeFmt),
-                            "amount",      order.getTotalAmount(),
-                            "status",      order.getStatus().name()
-                    );
+                    List<Map<String, Object>> itemsList = order.getItems().stream()
+                            .map(oi -> {
+                                Map<String, Object> itemMap = new HashMap<>();
+                                itemMap.put("id", oi.getId() != null ? oi.getId() : 0L);
+                                itemMap.put("name", oi.getItem() != null ? oi.getItem().getName() : "Item");
+                                itemMap.put("quantity", oi.getQuantity() != null ? oi.getQuantity() : 1);
+                                itemMap.put("unitPrice", oi.getUnitPrice() != null ? oi.getUnitPrice() : 0.0);
+                                itemMap.put("totalPrice", (oi.getQuantity() != null && oi.getUnitPrice() != null)
+                                        ? oi.getQuantity() * oi.getUnitPrice() : 0.0);
+                                return itemMap;
+                            })
+                            .collect(Collectors.toList());
+
+                    Map<String, Object> orderMap = new HashMap<>();
+                    orderMap.put("id", order.getId());
+                    orderMap.put("itemNames", itemNames);
+                    orderMap.put("date", order.getOrderTimestamp().format(dateFmt));
+                    orderMap.put("time", order.getOrderTimestamp().format(timeFmt));
+                    orderMap.put("amount", order.getTotalAmount() != null ? order.getTotalAmount() : 0.0);
+                    orderMap.put("status", order.getStatus() != null ? order.getStatus().name() : "COMPLETED");
+                    orderMap.put("items", itemsList);
+
+                    return orderMap;
                 })
                 .collect(Collectors.toList());
 
