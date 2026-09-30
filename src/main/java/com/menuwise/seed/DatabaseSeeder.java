@@ -5,6 +5,7 @@ import com.menuwise.domain.inventory.Ingredient;
 import com.menuwise.domain.inventory.Supplier;
 import com.menuwise.domain.menu.Item;
 import com.menuwise.domain.menu.ItemIngredient;
+import com.menuwise.domain.menu.ItemIngredientId;
 import com.menuwise.domain.order.Order;
 import com.menuwise.domain.order.OrderItem;
 import com.menuwise.domain.order.OrderStatus;
